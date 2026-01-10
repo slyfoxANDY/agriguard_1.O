@@ -1058,9 +1058,22 @@ const StrategistModule = {
             return;
         }
         
-        container.innerHTML = actions.slice(0, 10).map(action => {
-            const date = new Date(action.date || Date.now());
-            const tasks = action.tasks || action.activities || [action.task || action.action || action.description];
+        const today = new Date();
+        
+        container.innerHTML = actions.slice(0, 10).map((action, index) => {
+            // Parse the date from various formats
+            let date = this.parseActionDate(action, index, today);
+            
+            let tasks = action.tasks || action.activities || [action.task || action.action || action.description || action.activity || 'Scheduled task'];
+            
+            // Ensure tasks is an array and filter out undefined/null values
+            if (!Array.isArray(tasks)) {
+                tasks = [tasks];
+            }
+            tasks = tasks.filter(t => t !== undefined && t !== null);
+            if (tasks.length === 0) {
+                tasks = ['Scheduled task'];
+            }
             
             return `
                 <div class="calendar-day">
@@ -1069,9 +1082,12 @@ const StrategistModule = {
                         <div class="calendar-date-month">${date.toLocaleDateString('en-US', { month: 'short' })}</div>
                     </div>
                     <div class="calendar-tasks">
-                        ${(Array.isArray(tasks) ? tasks : [tasks]).map(task => {
+                        ${tasks.map(task => {
                             const taskType = this.getTaskType(task);
-                            return `<span class="calendar-task ${taskType}">${typeof task === 'object' ? task.name || task.task : task}</span>`;
+                            const taskName = typeof task === 'object' 
+                                ? (task.name || task.task || task.description || task.activity || task.action || 'Task') 
+                                : (task || 'Task');
+                            return `<span class="calendar-task ${taskType}">${taskName}</span>`;
                         }).join('')}
                     </div>
                 </div>
@@ -1119,6 +1135,52 @@ const StrategistModule = {
         if (taskLower.includes('water') || taskLower.includes('irrigat')) return 'water';
         if (taskLower.includes('plant') || taskLower.includes('seed') || taskLower.includes('companion')) return 'plant';
         return 'inspect';
+    },
+    
+    // Parse action date from various formats (Day 1, Week 1, date strings, etc.)
+    parseActionDate(action, index, today) {
+        // Try to get date/day/week from the action object
+        const dateStr = action.date || action.day || action.week || action.timeframe || action.timing || '';
+        
+        // If it's already a valid date object or timestamp
+        if (dateStr instanceof Date) {
+            return dateStr;
+        }
+        
+        // Try parsing as a real date first
+        const parsedDate = new Date(dateStr);
+        if (!isNaN(parsedDate.getTime()) && parsedDate.getFullYear() > 2000) {
+            return parsedDate;
+        }
+        
+        // Extract day number from strings like "Day 1", "Day 3-5", "Days 1-3"
+        const dayMatch = String(dateStr).match(/day\s*(\d+)/i);
+        if (dayMatch) {
+            const dayOffset = parseInt(dayMatch[1]) - 1;
+            return Utils.date.addDays(today, dayOffset);
+        }
+        
+        // Extract week number from strings like "Week 1", "Week 2"
+        const weekMatch = String(dateStr).match(/week\s*(\d+)/i);
+        if (weekMatch) {
+            const weekOffset = (parseInt(weekMatch[1]) - 1) * 7;
+            return Utils.date.addDays(today, weekOffset);
+        }
+        
+        // Check for relative terms
+        const lowerStr = String(dateStr).toLowerCase();
+        if (lowerStr.includes('immediate') || lowerStr.includes('today') || lowerStr.includes('now')) {
+            return today;
+        }
+        if (lowerStr.includes('tomorrow')) {
+            return Utils.date.addDays(today, 1);
+        }
+        
+        // Default: space out actions based on index
+        // First action is today, then spread them out
+        const dayOffsets = [0, 3, 7, 10, 14, 21, 28, 35, 45, 60];
+        const offset = dayOffsets[index] || (index * 7);
+        return Utils.date.addDays(today, offset);
     },
     
     // Extract text from various formats
