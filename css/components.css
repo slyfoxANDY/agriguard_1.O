@@ -801,6 +801,227 @@
     color: var(--gray);
 }
 
+/* Biotechnology-Enhanced IPM Section */
+.biotech-ipm {
+    margin-top: var(--spacing-lg);
+}
+
+.biotech-intro {
+    color: var(--gray);
+    margin-bottom: var(--spacing-lg);
+    font-style: italic;
+}
+
+.biotech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.biotech-card {
+    background: var(--off-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 2px solid transparent;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.biotech-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.biotech-card.genetic::before { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
+.biotech-card.rnai::before { background: linear-gradient(90deg, #2196F3, #03A9F4); }
+.biotech-card.biopesticide::before { background: linear-gradient(90deg, #795548, #8D6E63); }
+.biotech-card.botanical::before { background: linear-gradient(90deg, #66BB6A, #81C784); }
+.biotech-card.transgenic::before { background: linear-gradient(90deg, #9C27B0, #BA68C8); }
+
+.biotech-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--primary-green);
+}
+
+.biotech-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.biotech-icon {
+    font-size: 2.5rem;
+}
+
+.biotech-type-badge {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--primary-green);
+    color: var(--white);
+    border-radius: var(--radius-full);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.biotech-card.genetic .biotech-type-badge { background: #4CAF50; }
+.biotech-card.rnai .biotech-type-badge { background: #2196F3; }
+.biotech-card.biopesticide .biotech-type-badge { background: #795548; }
+.biotech-card.botanical .biotech-type-badge { background: #66BB6A; }
+.biotech-card.transgenic .biotech-type-badge { background: #9C27B0; }
+
+.biotech-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: var(--spacing-sm);
+}
+
+.biotech-description {
+    font-size: 0.9rem;
+    color: var(--gray);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+.biotech-mechanism {
+    background: rgba(76, 175, 80, 0.08);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.biotech-mechanism strong {
+    color: var(--primary-green);
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.biotech-mechanism p {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.biotech-benefits {
+    margin-bottom: var(--spacing-md);
+}
+
+.biotech-benefits strong {
+    color: var(--primary-green);
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.biotech-benefits ul {
+    margin: 0;
+    padding-left: var(--spacing-md);
+}
+
+.biotech-benefits li {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
+}
+
+.biotech-example {
+    background: rgba(255, 193, 7, 0.1);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--warning);
+    margin-bottom: var(--spacing-md);
+}
+
+.biotech-example strong {
+    color: var(--warning);
+    font-size: 0.8rem;
+}
+
+.biotech-example {
+    font-size: 0.85rem;
+    color: var(--dark-gray);
+}
+
+.biotech-applicability {
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.biotech-applicability.applicable {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--success);
+}
+
+.biotech-applicability.general {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--info);
+}
+
+/* Biotech Advantages Section */
+.biotech-advantages {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px dashed var(--light-gray);
+}
+
+.biotech-advantages h4 {
+    color: var(--primary-green);
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.1rem;
+}
+
+.advantages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.advantage-item {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--off-white);
+    border-radius: var(--radius-md);
+    transition: transform var(--transition-fast);
+}
+
+.advantage-item:hover {
+    transform: translateX(4px);
+}
+
+.advantage-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.advantage-content strong {
+    display: block;
+    color: var(--dark-gray);
+    margin-bottom: var(--spacing-xs);
+}
+
+.advantage-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--gray);
+    line-height: 1.4;
+}
+
 .risk-timeline {
     display: grid;
     gap: var(--spacing-md);

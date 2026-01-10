@@ -415,6 +415,9 @@ const StrategistModule = {
         // Beneficial insects (new)
         this.displayBeneficialInsects(result);
         
+        // Biotechnology-Enhanced IPM (new)
+        this.displayBiotechIPM(result, farmData);
+        
         // Risk assessment
         this.displayRiskAssessment(result);
         
@@ -511,6 +514,214 @@ const StrategistModule = {
                 `).join('')}
             </div>
         `;
+    },
+    
+    // Display Biotechnology-Enhanced IPM section
+    displayBiotechIPM(result, farmData) {
+        const container = $('#biotech-container');
+        if (!container) return;
+        
+        const crop = farmData?.crop?.toLowerCase() || '';
+        const biotechOptions = this.getBiotechRecommendations(crop, result);
+        const advantages = this.getIPMAdvantages();
+        
+        container.innerHTML = `
+            <h3>🧬 Biotechnology-Enhanced IPM</h3>
+            <p class="biotech-intro">Advanced biotechnological approaches for sustainable pest management in ${Utils.string.capitalize(crop) || 'your crop'}</p>
+            
+            <div class="biotech-grid">
+                ${biotechOptions.map(option => `
+                    <div class="biotech-card ${option.type}">
+                        <div class="biotech-header">
+                            <span class="biotech-icon">${option.icon}</span>
+                            <span class="biotech-type-badge">${option.typeBadge}</span>
+                        </div>
+                        <h4 class="biotech-name">${option.name}</h4>
+                        <p class="biotech-description">${option.description}</p>
+                        <div class="biotech-mechanism">
+                            <strong>🔬 How it works:</strong>
+                            <p>${option.mechanism}</p>
+                        </div>
+                        <div class="biotech-benefits">
+                            <strong>✅ Benefits:</strong>
+                            <ul>
+                                ${option.benefits.map(b => `<li>${b}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ${option.example ? `
+                            <div class="biotech-example">
+                                <strong>📌 Example:</strong> ${option.example}
+                            </div>
+                        ` : ''}
+                        <div class="biotech-applicability ${option.applicable ? 'applicable' : 'general'}">
+                            ${option.applicable ? `✓ Recommended for ${Utils.string.capitalize(crop)}` : '🌐 General application'}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="biotech-advantages">
+                <h4>🌟 Advantages of Biotech-Enhanced IPM</h4>
+                <div class="advantages-grid">
+                    ${advantages.map(adv => `
+                        <div class="advantage-item">
+                            <span class="advantage-icon">${adv.icon}</span>
+                            <div class="advantage-content">
+                                <strong>${adv.title}</strong>
+                                <p>${adv.description}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    },
+    
+    // Get biotechnology recommendations based on crop
+    getBiotechRecommendations(crop, result) {
+        const recommendations = [];
+        
+        // Bt Crops - applicable for cotton, corn, brinjal
+        const btCrops = ['cotton', 'corn', 'maize', 'brinjal', 'eggplant', 'soybean'];
+        const isBtApplicable = btCrops.some(c => crop.includes(c));
+        
+        recommendations.push({
+            icon: '🧬',
+            name: 'Bt (Bacillus thuringiensis) Crops',
+            typeBadge: 'Genetic Engineering',
+            type: 'genetic',
+            description: 'Plants genetically modified to produce insecticidal proteins from Bacillus thuringiensis bacterium.',
+            mechanism: 'The Bt gene produces crystal proteins (Cry proteins) that are toxic to specific insect larvae. When pests ingest these proteins, they bind to receptors in the insect gut, creating pores that lead to cell death.',
+            benefits: [
+                'Built-in pest protection - reduces need for sprays',
+                'Highly specific - targets only certain pest groups',
+                'Reduces pesticide use by 60-80%',
+                'Lowers farmer exposure to chemicals',
+                'Cost-effective over growing season'
+            ],
+            example: 'Bt Cotton produces Cry1Ac and Cry2Ab proteins, providing protection against bollworms (Helicoverpa armigera) without chemical sprays.',
+            applicable: isBtApplicable
+        });
+        
+        // RNAi Technology
+        const rnaiCrops = ['potato', 'corn', 'maize', 'tomato', 'soybean', 'cotton', 'wheat', 'rice'];
+        const isRnaiApplicable = rnaiCrops.some(c => crop.includes(c));
+        
+        recommendations.push({
+            icon: '🔬',
+            name: 'RNA Interference (RNAi) Technology',
+            typeBadge: 'Gene Silencing',
+            type: 'rnai',
+            description: 'Novel biotechnology that silences essential genes in pests, disrupting their vital functions.',
+            mechanism: 'Double-stranded RNA (dsRNA) matching pest genes is expressed in plants or applied as spray. When pests ingest it, their cellular machinery breaks down the dsRNA into small interfering RNAs (siRNAs) that silence matching genes, disrupting pest development or survival.',
+            benefits: [
+                'Extremely target-specific - affects only intended pests',
+                'No toxic residues in produce',
+                'Can target pests resistant to conventional methods',
+                'Effective against nematodes, insects, and viruses',
+                'Biodegradable and environmentally safe'
+            ],
+            example: 'RNAi-based protection against Colorado potato beetle by silencing genes essential for beetle survival. Also used for nematode control in soybeans.',
+            applicable: isRnaiApplicable
+        });
+        
+        // Biopesticides - Trichoderma
+        recommendations.push({
+            icon: '🍄',
+            name: 'Trichoderma Biocontrol Agents',
+            typeBadge: 'Biopesticide',
+            type: 'biopesticide',
+            description: 'Beneficial fungus used as biocontrol agent against plant pathogens through multiple mechanisms.',
+            mechanism: 'Trichoderma species (T. viride, T. harzianum) colonize plant roots and surrounding soil. They produce enzymes that degrade pathogen cell walls, compete for nutrients, parasitize other fungi, and induce systemic resistance in plants.',
+            benefits: [
+                'Controls soil-borne diseases (Fusarium, Pythium, Rhizoctonia)',
+                'Promotes plant growth and root development',
+                'Enhances nutrient uptake',
+                'Safe for humans, animals, and beneficial insects',
+                'Compatible with organic farming'
+            ],
+            example: 'Trichoderma harzianum application reduces damping-off disease in vegetables by 70-90% and improves seedling vigor.',
+            applicable: true
+        });
+        
+        // Neem-based Biopesticides
+        recommendations.push({
+            icon: '🌿',
+            name: 'Neem-Derived Biopesticides',
+            typeBadge: 'Botanical Pesticide',
+            type: 'botanical',
+            description: 'Azadirachtin and other compounds from neem (Azadirachta indica) with multiple modes of action against pests.',
+            mechanism: 'Azadirachtin disrupts insect hormones (ecdysteroids), preventing molting and reproduction. Other neem compounds act as antifeedants, repellents, and growth regulators. This multi-modal action prevents resistance development.',
+            benefits: [
+                'Broad spectrum - effective against 400+ pest species',
+                'Multiple modes of action prevent resistance',
+                'Safe for beneficial insects when applied correctly',
+                'Biodegradable - breaks down in sunlight',
+                'No pre-harvest interval restrictions'
+            ],
+            example: 'Neem oil spray (0.3% azadirachtin) controls aphids, whiteflies, and mites while being safe for ladybugs and bees.',
+            applicable: true
+        });
+        
+        // Virus-Resistant Varieties
+        const virusResistantCrops = ['papaya', 'squash', 'potato', 'tomato', 'pepper'];
+        const isVirusApplicable = virusResistantCrops.some(c => crop.includes(c));
+        
+        recommendations.push({
+            icon: '🛡️',
+            name: 'Virus-Resistant Transgenic Varieties',
+            typeBadge: 'Disease Resistance',
+            type: 'transgenic',
+            description: 'Plants engineered with viral coat protein genes or other mechanisms for immunity against devastating viral diseases.',
+            mechanism: 'Pathogen-derived resistance (PDR) uses viral genes to trigger plants natural defense mechanisms. When viruses attempt infection, the plant recognizes and degrades viral RNA through post-transcriptional gene silencing.',
+            benefits: [
+                'Complete protection against target viruses',
+                'Eliminates need for vector control',
+                'Maintains crop yield and quality',
+                'Reduces spread to neighboring fields',
+                'One-time solution vs. repeated spraying'
+            ],
+            example: 'Rainbow papaya with resistance to Papaya Ringspot Virus saved the Hawaiian papaya industry from devastation.',
+            applicable: isVirusApplicable
+        });
+        
+        return recommendations;
+    },
+    
+    // Get IPM advantages
+    getIPMAdvantages() {
+        return [
+            {
+                icon: '🌱',
+                title: 'Sustainable Agriculture',
+                description: 'Promotes long-term farming viability without depleting natural resources'
+            },
+            {
+                icon: '🌍',
+                title: 'Reduced Environmental Pollution',
+                description: 'Minimizes chemical runoff into soil and water systems'
+            },
+            {
+                icon: '🦋',
+                title: 'Preserves Biodiversity',
+                description: 'Protects natural enemies, pollinators, and beneficial organisms'
+            },
+            {
+                icon: '💰',
+                title: 'Cost-Effective',
+                description: 'Lower input costs over time compared to chemical-dependent systems'
+            },
+            {
+                icon: '❤️',
+                title: 'Health Protection',
+                description: 'Minimizes health risks for farmers and consumers from pesticide exposure'
+            },
+            {
+                icon: '🔄',
+                title: 'Resistance Management',
+                description: 'Reduces development of pest resistance through diverse control methods'
+            }
+        ];
     },
     
     // Display sustainability metrics

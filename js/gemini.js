@@ -1,55 +1,38 @@
 // Gemini AI Integration for AgriGuard
+// Frontend client that communicates with backend API
 
 const GeminiAPI = {
-    apiKey: null,
+    // Backend API base URL - same origin (single port setup)
+    getApiBaseUrl() {
+        // Use same origin - frontend and backend on same port
+        return window.location.origin;
+    },
     
-    // Initialize with API key
+    // Initialize - no longer needs API key on frontend
     init() {
-        this.apiKey = Utils.storage.get(CONFIG.STORAGE_KEYS.API_KEY);
-        return this.apiKey !== null;
+        console.log('🌱 GeminiAPI initialized - using backend proxy');
+        return true; // Always return true since backend handles auth
     },
     
-    // Set API key
+    // These methods are kept for backward compatibility but are no-ops
     setApiKey(key) {
-        this.apiKey = key;
-        Utils.storage.set(CONFIG.STORAGE_KEYS.API_KEY, key);
+        console.log('ℹ️ API key is now managed by backend server');
     },
     
-    // Get API key
     getApiKey() {
-        return this.apiKey;
+        return 'backend-managed';
     },
     
-    // Check if API is configured
+    // Check if API is configured - always true with backend
     isConfigured() {
-        return this.apiKey && this.apiKey.length > 0;
+        return true;
     },
     
-    // Make API request
+    // Make API request via backend proxy
     async request(model, contents, options = {}) {
-        if (!this.isConfigured()) {
-            throw new Error('API key not configured. Please add your Gemini API key in Settings.');
-        }
+        const url = `${this.getApiBaseUrl()}/api/gemini`;
         
-        const url = `${CONFIG.GEMINI_API_URL}/${model}:generateContent?key=${this.apiKey}`;
-        
-        const body = {
-            contents,
-            generationConfig: {
-                temperature: options.temperature || 0.7,
-                topK: options.topK || 40,
-                topP: options.topP || 0.95,
-                maxOutputTokens: options.maxTokens || 8192,
-            }
-        };
-        
-        if (options.systemInstruction) {
-            body.systemInstruction = {
-                parts: [{ text: options.systemInstruction }]
-            };
-        }
-        
-        console.log('🌱 Gemini Request:', { model, contentLength: contents.length });
+        console.log('🌱 Gemini Request (via backend):', { model, contentLength: contents.length });
         
         try {
             const response = await fetch(url, {
@@ -57,30 +40,38 @@ const GeminiAPI = {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(body)
+                body: JSON.stringify({
+                    model,
+                    contents,
+                    options: {
+                        temperature: options.temperature || 0.7,
+                        topK: options.topK || 40,
+                        topP: options.topP || 0.95,
+                        maxTokens: options.maxTokens || 8192,
+                        systemInstruction: options.systemInstruction
+                    }
+                })
             });
             
             const data = await response.json();
             
             if (!response.ok) {
-                console.error('❌ Gemini API Error Response:', data);
-                throw new Error(data.error?.message || `API request failed: ${response.status}`);
+                console.error('❌ Backend API Error Response:', data);
+                throw new Error(data.error || `API request failed: ${response.status}`);
             }
             
-            console.log('✅ Gemini Response received');
+            console.log('✅ Gemini Response received via backend');
             
-            if (!data.candidates || data.candidates.length === 0) {
-                console.error('❌ No candidates in response:', data);
-                throw new Error('No response generated. The model may have blocked the content.');
+            // Handle the response format from our backend
+            if (data.text) {
+                return data.text;
             }
             
-            // Check for blocked content
-            if (data.candidates[0].finishReason === 'SAFETY') {
-                console.warn('⚠️ Content was blocked by safety filters');
-                throw new Error('Response was blocked by safety filters. Please try with a different image.');
+            if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                return data.candidates[0].content.parts[0].text;
             }
             
-            return data.candidates[0].content.parts[0].text;
+            throw new Error('Invalid response format from backend');
         } catch (error) {
             console.error('Gemini API Error:', error);
             throw error;
