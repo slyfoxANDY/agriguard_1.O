@@ -2,6 +2,8 @@
 
 const StrategistModule = {
     currentStrategy: null,
+    stressImages: [],
+    stressAnalysis: null,
     
     // Initialize module
     init() {
@@ -18,6 +20,276 @@ const StrategistModule = {
                 this.generateStrategy();
             });
         }
+        
+        // Stress detection image upload handlers
+        this.setupStressUpload();
+    },
+    
+    // Setup stress detection upload
+    setupStressUpload() {
+        const uploadZone = $('#stress-upload-zone');
+        const fileInput = $('#stress-file-input');
+        const clearBtn = $('#clear-stress-images');
+        
+        if (uploadZone) {
+            uploadZone.addEventListener('click', () => fileInput?.click());
+            
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('drag-over');
+            });
+            
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('drag-over');
+            });
+            
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('drag-over');
+                this.handleStressFiles(e.dataTransfer.files);
+            });
+        }
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                this.handleStressFiles(e.target.files);
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => this.clearStressImages());
+        }
+    },
+    
+    // Handle stress detection files
+    async handleStressFiles(files) {
+        if (!files || files.length === 0) return;
+        
+        for (const file of files) {
+            const validation = Utils.file.validateImage(file);
+            if (!validation.valid) {
+                Utils.toast.error(validation.error);
+                continue;
+            }
+            
+            try {
+                const dataUrl = await Utils.file.toDataURL(file);
+                const base64 = await Utils.file.toBase64(file);
+                
+                this.stressImages.push({
+                    dataUrl,
+                    base64,
+                    mimeType: Utils.file.getMimeType(file),
+                    name: file.name
+                });
+            } catch (error) {
+                console.error('Error loading image:', error);
+            }
+        }
+        
+        this.updateStressPreview();
+        
+        // Auto-analyze if images were added
+        if (this.stressImages.length > 0) {
+            this.analyzeStressImages();
+        }
+    },
+    
+    // Update stress preview
+    updateStressPreview() {
+        const preview = $('#stress-preview');
+        const container = $('#preview-images');
+        const uploadZone = $('#stress-upload-zone');
+        
+        if (this.stressImages.length === 0) {
+            preview?.classList.add('hidden');
+            uploadZone?.classList.remove('hidden');
+            return;
+        }
+        
+        uploadZone?.classList.add('hidden');
+        preview?.classList.remove('hidden');
+        
+        if (container) {
+            container.innerHTML = this.stressImages.map((img, idx) => `
+                <div class="stress-image-preview">
+                    <img src="${img.dataUrl}" alt="${img.name}">
+                    <span class="image-name">${img.name}</span>
+                </div>
+            `).join('');
+        }
+    },
+    
+    // Clear stress images
+    clearStressImages() {
+        this.stressImages = [];
+        this.stressAnalysis = null;
+        this.updateStressPreview();
+        
+        const analysisSection = $('#stress-analysis');
+        if (analysisSection) {
+            analysisSection.classList.add('hidden');
+        }
+        
+        const fileInput = $('#stress-file-input');
+        if (fileInput) fileInput.value = '';
+        
+        Utils.toast.info('Images cleared');
+    },
+    
+    // Analyze stress images
+    async analyzeStressImages() {
+        if (!GeminiAPI.isConfigured()) {
+            Utils.toast.warning('Add API key in Settings to enable stress analysis');
+            return;
+        }
+        
+        if (this.stressImages.length === 0) return;
+        
+        const analysisSection = $('#stress-analysis');
+        const insightsContainer = $('#stress-insights');
+        
+        analysisSection?.classList.remove('hidden');
+        insightsContainer.innerHTML = `
+            <div class="analyzing-indicator">
+                <div class="spinner"></div>
+                <p>Analyzing crop imagery for early stress indicators...</p>
+            </div>
+        `;
+        
+        try {
+            // Analyze first image (or combine for multiple)
+            const primaryImage = this.stressImages[0];
+            const result = await GeminiAPI.analyzeStress(
+                primaryImage.base64, 
+                primaryImage.mimeType
+            );
+            
+            this.stressAnalysis = result;
+            this.displayStressAnalysis(result);
+            
+            Utils.toast.success('Stress analysis complete!');
+        } catch (error) {
+            insightsContainer.innerHTML = `
+                <div class="analysis-error">
+                    <p>⚠️ Unable to analyze images: ${error.message}</p>
+                </div>
+            `;
+            console.error(error);
+        }
+    },
+    
+    // Display stress analysis results
+    displayStressAnalysis(result) {
+        const container = $('#stress-insights');
+        if (!container) return;
+        
+        const health = result.overallHealth || {};
+        const indicators = result.stressIndicators || [];
+        const predictions = result.predictedRisks || [];
+        const actions = result.immediateActions || [];
+        const ipm = result.ipmRecommendations || {};
+        
+        const healthScore = health.score || 75;
+        const healthColor = healthScore >= 80 ? 'var(--success)' : 
+                           healthScore >= 60 ? 'var(--warning)' : 'var(--danger)';
+        
+        container.innerHTML = `
+            <div class="stress-overview">
+                <div class="health-gauge">
+                    <svg viewBox="0 0 120 120" class="gauge-svg">
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray-light)" stroke-width="10"/>
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="${healthColor}" stroke-width="10"
+                                stroke-dasharray="${healthScore * 3.14} 314" 
+                                stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                        <text x="60" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="${healthColor}">${healthScore}</text>
+                        <text x="60" y="75" text-anchor="middle" font-size="10" fill="var(--text-secondary)">Health Score</text>
+                    </svg>
+                </div>
+                <div class="health-details">
+                    <h4>${health.status || 'Analysis Complete'}</h4>
+                    <span class="urgency-badge urgency-${(health.urgency || 'medium').toLowerCase()}">${health.urgency || 'Medium'} Urgency</span>
+                </div>
+            </div>
+            
+            ${indicators.length > 0 ? `
+                <div class="stress-indicators">
+                    <h5>🔍 Detected Stress Indicators</h5>
+                    ${indicators.map(ind => `
+                        <div class="indicator-card ${ind.earlyWarning ? 'early-warning' : ''}">
+                            <div class="indicator-header">
+                                <span class="indicator-type">${ind.type}</span>
+                                <span class="indicator-severity severity-${(ind.severity || 'moderate').toLowerCase()}">${ind.severity}</span>
+                            </div>
+                            <p class="indicator-signs">${ind.visualSigns}</p>
+                            <div class="indicator-meta">
+                                <span>📍 ${ind.affectedArea}</span>
+                                <span>🎯 ${ind.confidence}% confidence</span>
+                            </div>
+                            ${ind.earlyWarning ? '<div class="early-warning-badge">⚡ Early Warning</div>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            ${predictions.length > 0 ? `
+                <div class="predicted-risks">
+                    <h5>⚠️ Predicted Risks</h5>
+                    ${predictions.map(pred => `
+                        <div class="risk-prediction">
+                            <div class="risk-header">
+                                <span class="risk-name">${pred.risk}</span>
+                                <span class="risk-prob prob-${pred.probability?.toLowerCase()}">${pred.probability}</span>
+                            </div>
+                            <p>${pred.reason}</p>
+                            <small>⏱️ Timeframe: ${pred.timeframe}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            ${actions.length > 0 ? `
+                <div class="immediate-actions">
+                    <h5>🚀 Recommended Immediate Actions</h5>
+                    <ul class="action-list">
+                        ${actions.map(action => `<li>${action}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            
+            ${Object.keys(ipm).length > 0 ? `
+                <div class="ipm-preview">
+                    <h5>🛡️ IPM Recommendations from Analysis</h5>
+                    <div class="ipm-categories">
+                        ${ipm.preventive?.length ? `
+                            <div class="ipm-category">
+                                <span class="category-icon">🛑</span>
+                                <span class="category-name">Preventive</span>
+                                <ul>${ipm.preventive.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                        ${ipm.biological?.length ? `
+                            <div class="ipm-category">
+                                <span class="category-icon">🐞</span>
+                                <span class="category-name">Biological</span>
+                                <ul>${ipm.biological.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                        ${ipm.cultural?.length ? `
+                            <div class="ipm-category">
+                                <span class="category-icon">🌱</span>
+                                <span class="category-name">Cultural</span>
+                                <ul>${ipm.cultural.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <div class="stress-note">
+                <p>💡 This analysis will be integrated into your IPM strategy for context-aware recommendations.</p>
+            </div>
+        `;
     },
     
     // Load weather forecast
@@ -77,6 +349,11 @@ const StrategistModule = {
             duration: $('#plan-duration').value
         };
         
+        // Add stress analysis context if available
+        if (this.stressAnalysis) {
+            farmData.stressAnalysis = this.stressAnalysis;
+        }
+        
         // Validate
         if (!farmData.crop || !farmData.size || !farmData.location) {
             Utils.toast.error('Please fill in all required fields');
@@ -107,7 +384,8 @@ const StrategistModule = {
             // Log activity
             Utils.activity.log('strategy', `IPM Strategy: ${farmData.crop}`, {
                 duration: farmData.duration,
-                method: farmData.method
+                method: farmData.method,
+                hasStressAnalysis: !!this.stressAnalysis
             });
             
             Utils.toast.success('Strategy generated!');
@@ -134,6 +412,9 @@ const StrategistModule = {
         // Companion planting
         this.displayCompanions(result);
         
+        // Beneficial insects (new)
+        this.displayBeneficialInsects(result);
+        
         // Risk assessment
         this.displayRiskAssessment(result);
         
@@ -142,6 +423,9 @@ const StrategistModule = {
         
         // Action calendar
         this.displayActionCalendar(result, farmData);
+        
+        // Sustainability metrics (new)
+        this.displaySustainability(result);
         
         // Scroll to results
         resultsContainer.scrollIntoView({ behavior: 'smooth' });
@@ -153,8 +437,17 @@ const StrategistModule = {
         if (!container) return;
         
         const overview = result.strategyOverview || result.overview || result;
+        const sustainabilityScore = overview.sustainabilityScore || 75;
         
         container.innerHTML = `
+            <div class="overview-header">
+                <h3>${overview.title || `Sustainable IPM Strategy for ${Utils.string.capitalize(farmData.crop)}`}</h3>
+                <div class="sustainability-badge">
+                    <span class="score">${sustainabilityScore}</span>
+                    <span class="label">Sustainability Score</span>
+                </div>
+            </div>
+            <p class="strategy-philosophy">${overview.philosophy || 'Prevention-first approach minimizing chemical interventions'}</p>
             <div class="overview-stats">
                 <div class="overview-stat">
                     <div class="overview-stat-value">${farmData.duration}</div>
@@ -168,18 +461,141 @@ const StrategistModule = {
                     <div class="overview-stat-value">${farmData.size}</div>
                     <div class="overview-stat-label">Acres</div>
                 </div>
+                ${this.stressAnalysis ? `
+                    <div class="overview-stat stress-integrated">
+                        <div class="overview-stat-value">✓</div>
+                        <div class="overview-stat-label">Stress Data</div>
+                    </div>
+                ` : ''}
             </div>
             <div class="overview-text">
                 <h4>📋 Key Objectives</h4>
-                <p>${this.extractText(overview.objectives || overview.keyObjectives) || 'Optimize crop health through integrated pest management practices.'}</p>
+                <ul class="objectives-list">
+                    ${this.formatListItems(overview.objectives || ['Reduce pest pressure', 'Minimize chemical usage', 'Improve crop health'])}
+                </ul>
                 
                 <h4>🎯 Expected Outcomes</h4>
-                <p>${this.extractText(overview.outcomes || overview.expectedOutcomes) || 'Reduced pest pressure, improved crop health, and sustainable farming practices.'}</p>
-                
-                ${overview.resources ? `
-                    <h4>📦 Resources Needed</h4>
-                    <p>${this.extractText(overview.resources || overview.resourcesNeeded)}</p>
-                ` : ''}
+                <ul class="outcomes-list">
+                    ${this.formatListItems(overview.expectedOutcomes || ['Healthier crops', 'Reduced input costs', 'Sustainable practices'])}
+                </ul>
+            </div>
+        `;
+    },
+    
+    // Display beneficial insects
+    displayBeneficialInsects(result) {
+        const container = $('#beneficials-container');
+        if (!container) return;
+        
+        const beneficials = result.beneficialInsects || [];
+        
+        if (!beneficials || beneficials.length === 0) {
+            container.innerHTML = this.getDefaultBeneficials();
+            return;
+        }
+        
+        container.innerHTML = `
+            <h4>🐞 Beneficial Insects</h4>
+            <div class="beneficials-grid">
+                ${beneficials.map(b => `
+                    <div class="beneficial-card">
+                        <div class="beneficial-icon">${b.emoji || '🐛'}</div>
+                        <div class="beneficial-info">
+                            <h5>${b.insect}</h5>
+                            <p class="target-pests">Targets: ${Array.isArray(b.targetPests) ? b.targetPests.join(', ') : b.targetPests}</p>
+                            <p class="release-info">📦 ${b.releaseRate}</p>
+                            <p class="timing-info">⏰ ${b.timing}</p>
+                            ${b.habitat ? `<p class="habitat-info">🌿 ${b.habitat}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    },
+    
+    // Display sustainability metrics
+    displaySustainability(result) {
+        let container = $('#sustainability-container');
+        
+        // Create container if it doesn't exist
+        if (!container) {
+            const resultsSection = $('#strategy-results');
+            if (resultsSection) {
+                const sustainDiv = document.createElement('div');
+                sustainDiv.className = 'sustainability-section glass-card';
+                sustainDiv.id = 'sustainability-container';
+                resultsSection.appendChild(sustainDiv);
+                container = sustainDiv;
+            }
+        }
+        
+        if (!container) return;
+        
+        const metrics = result.sustainabilityMetrics || {};
+        const costBenefit = result.costBenefit || {};
+        
+        container.innerHTML = `
+            <h3>🌍 Sustainability & ROI</h3>
+            <div class="sustainability-grid">
+                <div class="metric-card">
+                    <span class="metric-icon">🧪</span>
+                    <span class="metric-value">${metrics.chemicalReduction || '60% reduction'}</span>
+                    <span class="metric-label">Chemical Reduction Target</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-icon">🐝</span>
+                    <span class="metric-value">${metrics.biodiversityGoal || '+40% beneficial insects'}</span>
+                    <span class="metric-label">Biodiversity Goal</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-icon">💰</span>
+                    <span class="metric-value">${costBenefit.estimatedSavings || '15-25% savings'}</span>
+                    <span class="metric-label">Estimated Savings</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-icon">📈</span>
+                    <span class="metric-value">${costBenefit.roi || '20% ROI improvement'}</span>
+                    <span class="metric-label">Expected ROI</span>
+                </div>
+            </div>
+            ${metrics.soilHealthPractices ? `
+                <div class="soil-practices">
+                    <h5>🌱 Soil Health Practices</h5>
+                    <div class="practice-tags">
+                        ${metrics.soilHealthPractices.map(p => `<span class="practice-tag">${p}</span>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        `;
+    },
+    
+    // Helper: Format list items
+    formatListItems(items) {
+        if (!items) return '<li>No specific items</li>';
+        if (typeof items === 'string') return `<li>${items}</li>`;
+        if (Array.isArray(items)) return items.map(i => `<li>${i}</li>`).join('');
+        return '<li>No specific items</li>';
+    },
+    
+    // Helper: Get default beneficials
+    getDefaultBeneficials() {
+        return `
+            <h4>🐞 Beneficial Insects</h4>
+            <div class="beneficials-grid">
+                <div class="beneficial-card">
+                    <div class="beneficial-icon">🐞</div>
+                    <div class="beneficial-info">
+                        <h5>Ladybugs</h5>
+                        <p>Natural aphid predators</p>
+                    </div>
+                </div>
+                <div class="beneficial-card">
+                    <div class="beneficial-icon">🐝</div>
+                    <div class="beneficial-info">
+                        <h5>Pollinators</h5>
+                        <p>Essential for fruit set</p>
+                    </div>
+                </div>
             </div>
         `;
     },

@@ -44,40 +44,154 @@ const CONFIG = {
 
 // Gemini Prompts
 const PROMPTS = {
-    // The Eye - Field Analysis
-    FIELD_ANALYSIS: `You are an expert agricultural analyst specializing in satellite and drone imagery analysis for precision farming. Analyze this field/crop image and provide:
+    // The Eye - Advanced Field Health Map Analysis
+    FIELD_ANALYSIS: `You are an expert agricultural remote sensing analyst specializing in multi-spectral imagery analysis for precision farming. Analyze this drone/satellite field image using techniques similar to NDVI, NDWI, and false-color analysis to detect EARLY, INVISIBLE crop stress.
 
-1. **Overall Health Assessment**: Rate the field health from 1-100
-2. **Vegetation Analysis (NDVI-like)**: Identify areas of:
-   - Excellent growth (dark green, healthy)
-   - Good growth (medium green)
-   - Moderate stress (yellow-green)
-   - Poor health (yellow/brown)
-   - Critical areas (brown/dead)
+IMPORTANT: Respond with ONLY valid JSON (no markdown, no code blocks). Use this EXACT structure:
 
-3. **Zone Identification**: Divide the field into zones and describe each:
-   - Zone location (e.g., northwest corner, center strip)
-   - Health status
-   - Potential issues
-   - Recommended actions
+{
+  "healthMap": {
+    "overallScore": 78,
+    "overallStatus": "Good with localized stress",
+    "fieldSize": "Approximately 15-20 acres visible",
+    "cropType": "Detected crop type or 'Mixed/Unknown'",
+    "growthStage": "Vegetative / Reproductive / Maturity",
+    "analysisConfidence": 85
+  },
+  "spectralAnalysis": {
+    "vegetationIndex": {
+      "score": 75,
+      "interpretation": "Moderate to good chlorophyll content across most of the field",
+      "anomalies": ["Reduced vegetation vigor in southeast quadrant", "Possible nutrient stress in center strip"]
+    },
+    "waterStressIndex": {
+      "score": 65,
+      "interpretation": "Mild water stress detected in elevated areas",
+      "criticalAreas": ["Northwest corner showing early wilting signatures"]
+    },
+    "chlorophyllContent": {
+      "level": "Moderate",
+      "distribution": "Uneven - higher in lowland areas",
+      "deficiencyZones": ["Row 5-8 showing yellowing patterns"]
+    }
+  },
+  "zones": [
+    {
+      "id": "Z1",
+      "name": "Northwest Section",
+      "gridPosition": {"row": 1, "col": 1},
+      "healthScore": 85,
+      "status": "Excellent",
+      "colorSignature": "Dark green, dense canopy",
+      "stressType": "None detected",
+      "stressLevel": 0,
+      "issues": [],
+      "irrigationNeed": "None",
+      "fertilizationNeed": "None",
+      "priority": "Low"
+    },
+    {
+      "id": "Z2", 
+      "name": "Northeast Section",
+      "gridPosition": {"row": 1, "col": 2},
+      "healthScore": 62,
+      "status": "Moderate Stress",
+      "colorSignature": "Yellow-green patches, uneven canopy",
+      "stressType": "Water stress",
+      "stressLevel": 2,
+      "issues": ["Early drought stress", "Reduced leaf turgor"],
+      "irrigationNeed": "High - Immediate",
+      "fertilizationNeed": "Medium - After irrigation",
+      "priority": "High"
+    },
+    {
+      "id": "Z3",
+      "name": "Southwest Section", 
+      "gridPosition": {"row": 2, "col": 1},
+      "healthScore": 70,
+      "status": "Good",
+      "colorSignature": "Medium green, uniform",
+      "stressType": "Minor nutrient",
+      "stressLevel": 1,
+      "issues": ["Slight nitrogen deficiency"],
+      "irrigationNeed": "Low",
+      "fertilizationNeed": "Medium - Nitrogen boost recommended",
+      "priority": "Medium"
+    },
+    {
+      "id": "Z4",
+      "name": "Southeast Section",
+      "gridPosition": {"row": 2, "col": 2},
+      "healthScore": 45,
+      "status": "Poor",
+      "colorSignature": "Brown patches, sparse coverage",
+      "stressType": "Multiple stress factors",
+      "stressLevel": 3,
+      "issues": ["Severe water stress", "Possible root disease", "Compacted soil indicators"],
+      "irrigationNeed": "Critical - Urgent",
+      "fertilizationNeed": "High - After soil inspection",
+      "priority": "Critical"
+    }
+  ],
+  "earlyWarnings": [
+    {
+      "type": "Water Stress Onset",
+      "location": "Eastern field edge",
+      "severity": "Early Stage",
+      "daysToVisible": "3-5 days until visible symptoms",
+      "action": "Increase irrigation in affected zone within 48 hours"
+    },
+    {
+      "type": "Nutrient Deficiency Pattern",
+      "location": "Central rows",
+      "severity": "Developing",
+      "daysToVisible": "7-10 days until yield impact",
+      "action": "Apply foliar nitrogen spray"
+    }
+  ],
+  "resourceApplication": {
+    "irrigation": {
+      "immediateZones": ["Z2", "Z4"],
+      "scheduledZones": ["Z3"],
+      "applicationRate": "Zone Z4: 150% normal rate, Zone Z2: 125% normal rate",
+      "timing": "Early morning or late evening",
+      "method": "Drip irrigation recommended for Z4"
+    },
+    "fertilization": {
+      "immediateZones": ["Z4"],
+      "scheduledZones": ["Z2", "Z3"],
+      "recommendations": [
+        {"zone": "Z4", "fertilizer": "Balanced NPK 10-10-10", "rate": "50 kg/acre", "timing": "After irrigation"},
+        {"zone": "Z3", "fertilizer": "Urea 46-0-0", "rate": "25 kg/acre", "timing": "Within 7 days"}
+      ]
+    },
+    "pestControl": {
+      "inspectionZones": ["Z4"],
+      "reason": "Stress makes crops vulnerable to pest attack",
+      "preventiveMeasures": ["Scout for aphids", "Check for fungal symptoms"]
+    }
+  },
+  "actionPlan": [
+    {"priority": 1, "action": "Irrigate Zone Z4 immediately", "deadline": "Within 24 hours", "expectedImprovement": "15-20% health increase in 5-7 days"},
+    {"priority": 2, "action": "Irrigate Zone Z2", "deadline": "Within 48 hours", "expectedImprovement": "10-15% health increase"},
+    {"priority": 3, "action": "Scout Zone Z4 for pests/disease", "deadline": "Before fertilization", "expectedImprovement": "Prevent secondary damage"},
+    {"priority": 4, "action": "Apply nitrogen to Zone Z3", "deadline": "Within 7 days", "expectedImprovement": "Improved vigor and color"}
+  ],
+  "falseColorInterpretation": {
+    "redChannelFindings": "Healthy vegetation appears red in false-color; reduced red intensity in Z4 indicates poor chlorophyll",
+    "nirFindings": "Near-infrared reflectance low in stressed areas, indicating reduced plant cell structure",
+    "overallPattern": "Classic drought stress signature with gradient from healthy (west) to stressed (east)"
+  }
+}
 
-4. **Water Stress Analysis**: Identify areas showing:
-   - Adequate moisture
-   - Mild water stress
-   - Severe water stress
-
-5. **Pest/Disease Indicators**: Look for patterns suggesting:
-   - Pest damage (irregular patterns, edge damage)
-   - Disease spread (circular patterns, color changes)
-   - Nutrient deficiencies
-
-6. **Actionable Recommendations**: Provide specific actions for each problem zone:
-   - Irrigation adjustments
-   - Fertilization needs
-   - Areas requiring immediate inspection
-   - Timing for interventions
-
-Format your response as structured JSON with these sections. Be specific and actionable.`,
+ANALYSIS GUIDELINES:
+- Divide the field into a 2x2 or 3x3 grid of zones
+- Assign health scores 0-100 for each zone (100 = perfect health)
+- Status options: "Excellent" (80-100), "Good" (60-79), "Moderate Stress" (40-59), "Poor" (20-39), "Critical" (0-19)
+- Identify EARLY stress before it's visible to the naked eye
+- Provide specific, actionable resource application recommendations
+- Focus on precision agriculture - targeted intervention, not blanket treatment
+- Consider water stress, nutrient deficiency, pest/disease, and soil compaction`,
 
     // The Specialist - Pest/Disease Diagnosis
     PEST_DIAGNOSIS: `You are an expert plant pathologist and entomologist. Analyze this plant image carefully and provide a comprehensive diagnosis.
@@ -131,10 +245,65 @@ GUIDELINES:
 - Be specific and actionable with real product names and dosages where applicable
 - If the image shows a healthy plant, say so with name "Healthy Plant" and confidence level`,
 
-    // The Strategist - IPM Plan
-    IPM_STRATEGY: `You are an expert Integrated Pest Management (IPM) strategist. Create a comprehensive, long-term pest management plan based on the following farm information:
+    // Early Stress Detection Analysis
+    STRESS_DETECTION: `You are an expert agricultural analyst specializing in early crop stress detection from imagery. Analyze this crop/field image and identify any early signs of stress BEFORE they become major problems.
 
-FARM DETAILS:
+IMPORTANT: Respond with ONLY valid JSON (no markdown, no code blocks). Use this exact structure:
+
+{
+  "overallHealth": {
+    "score": 75,
+    "status": "Moderate Stress Detected",
+    "urgency": "Medium"
+  },
+  "stressIndicators": [
+    {
+      "type": "Water Stress",
+      "confidence": 85,
+      "severity": "Moderate",
+      "affectedArea": "30% of visible crop",
+      "visualSigns": "Leaf curling, slight wilting in afternoon hours",
+      "earlyWarning": true
+    }
+  ],
+  "environmentalFactors": {
+    "estimatedMoisture": "Low-Medium",
+    "canopyDensity": "Medium",
+    "colorAnalysis": "Yellow-green tinge indicating chlorosis",
+    "growthStage": "Vegetative - V6 stage"
+  },
+  "predictedRisks": [
+    {
+      "risk": "Pest vulnerability",
+      "probability": "High",
+      "timeframe": "7-14 days",
+      "reason": "Stressed plants more susceptible to aphid infestation"
+    }
+  ],
+  "immediateActions": [
+    "Increase irrigation frequency",
+    "Apply foliar micronutrient spray",
+    "Scout for secondary pest invasion"
+  ],
+  "ipmRecommendations": {
+    "preventive": ["Deploy yellow sticky traps", "Introduce beneficial insects"],
+    "cultural": ["Adjust irrigation schedule", "Apply mulch to retain moisture"],
+    "biological": ["Release ladybugs for aphid control"],
+    "chemical": ["Prepare neem oil spray as backup"]
+  }
+}
+
+GUIDELINES:
+- urgency must be: "Low", "Medium", "High", "Critical"
+- Focus on EARLY detection - identify problems before they escalate
+- Consider how current stress makes crops vulnerable to pests/diseases
+- Provide actionable IPM recommendations based on stress findings
+- Be specific about affected areas and visual signs`,
+
+    // The Strategist - IPM Plan (Enhanced)
+    IPM_STRATEGY: `You are an expert Integrated Pest Management (IPM) strategist focused on SUSTAINABLE, TIMELY, and CONTEXT-AWARE pest management. Create a comprehensive strategy that prioritizes prevention and biological controls.
+
+FARM CONTEXT:
 - Crop: {crop}
 - Farm Size: {size} acres
 - Location: {location}
@@ -142,51 +311,108 @@ FARM DETAILS:
 - Farming Method: {method}
 - Plan Duration: {duration} days
 
-Create a detailed IPM strategy including:
+{stressContext}
 
-1. **Strategy Overview**:
-   - Key objectives
-   - Expected outcomes
-   - Resources needed
-   - Success metrics
+IMPORTANT: Respond with ONLY valid JSON. Use this exact structure:
 
-2. **Companion Planting Recommendations**:
-   For each suggested companion plant provide:
-   - Plant name and emoji
-   - Primary benefit (pest repellent, beneficial insect attractor, etc.)
-   - Planting location relative to main crop
-   - Care requirements
+{
+  "strategyOverview": {
+    "title": "Sustainable IPM Strategy for [Crop]",
+    "philosophy": "Prevention-first approach minimizing chemical interventions",
+    "objectives": ["Reduce pest pressure by 70%", "Minimize chemical usage", "Improve beneficial insect population"],
+    "expectedOutcomes": ["Healthier crops", "Reduced input costs", "Environmental sustainability"],
+    "sustainabilityScore": 85
+  },
+  "riskTimeline": [
+    {
+      "week": 1,
+      "riskLevel": "Low",
+      "primaryThreats": ["Aphids", "Early blight"],
+      "weatherRisk": "Rain may increase fungal pressure",
+      "criticalActions": ["Deploy monitoring traps", "Scout field borders"]
+    }
+  ],
+  "companionPlanting": [
+    {
+      "plant": "Marigolds",
+      "emoji": "🌼",
+      "benefit": "Repels aphids and nematodes",
+      "placement": "Border rows every 10 feet",
+      "timing": "Plant 2 weeks before main crop"
+    }
+  ],
+  "beneficialInsects": [
+    {
+      "insect": "Ladybugs",
+      "emoji": "🐞",
+      "targetPests": ["Aphids", "Mites"],
+      "releaseRate": "1,500 per acre",
+      "timing": "Release at dusk when pest population is low-moderate",
+      "habitat": "Plant dill and fennel to retain them"
+    }
+  ],
+  "sprayProtocol": {
+    "primaryApproach": "Biological and organic first",
+    "optimalConditions": {
+      "temperature": "65-85°F",
+      "windSpeed": "Under 10 mph",
+      "timeOfDay": "Early morning or late evening",
+      "humidity": "40-70%"
+    },
+    "schedule": [
+      {
+        "product": "Neem oil",
+        "type": "Organic",
+        "timing": "Weekly preventive",
+        "targetPests": ["Aphids", "Whiteflies"],
+        "applicationRate": "2 tbsp per gallon",
+        "notes": "Avoid during pollination"
+      }
+    ]
+  },
+  "actionCalendar": [
+    {
+      "day": 1,
+      "week": 1,
+      "tasks": [
+        {"action": "Install yellow sticky traps", "category": "Monitoring", "priority": "High"},
+        {"action": "Scout for early pest signs", "category": "Inspection", "priority": "High"}
+      ]
+    }
+  ],
+  "emergencyProtocol": {
+    "thresholds": {
+      "aphids": "50+ per plant = action required",
+      "fungalSpots": "5% leaf coverage = treat immediately"
+    },
+    "escalationSteps": [
+      "Increase biological controls",
+      "Apply targeted organic treatment",
+      "Spot-treat with approved chemicals only as last resort"
+    ]
+  },
+  "sustainabilityMetrics": {
+    "chemicalReduction": "Target 60% reduction vs conventional",
+    "biodiversityGoal": "Increase beneficial insect count by 40%",
+    "soilHealthPractices": ["Cover cropping", "Reduced tillage", "Compost application"]
+  },
+  "costBenefit": {
+    "estimatedSavings": "15-25% reduction in pesticide costs",
+    "laborRequirements": "Additional 2-3 hours/week for monitoring",
+    "roi": "Expected 20% improvement in net returns"
+  }
+}
 
-3. **Predictive Risk Assessment**:
-   Based on the crop, location, and season, predict:
-   - Week-by-week pest/disease risk levels
-   - Specific threats to watch for each period
-   - Environmental triggers to monitor
-   - Early warning signs
+STRATEGY PRINCIPLES:
+1. PREVENTION FIRST - Stop problems before they start
+2. BIOLOGICAL CONTROLS - Use nature's pest controllers
+3. CULTURAL PRACTICES - Create unfavorable conditions for pests
+4. TARGETED INTERVENTION - Chemicals only as last resort, spot-treat when possible
+5. TIMING IS CRITICAL - Act at optimal pest lifecycle stages
+6. WEATHER-AWARE - Adjust based on forecast conditions
+7. CONTINUOUS MONITORING - Catch issues early
 
-4. **Spray Timing Optimization**:
-   Provide optimal spray windows considering:
-   - Best time of day
-   - Weather conditions required
-   - Pest lifecycle stages to target
-   - Frequency recommendations
-   - Wind speed thresholds
-
-5. **Action Calendar**:
-   Create a day-by-day or week-by-week action plan including:
-   - Monitoring tasks
-   - Treatment applications
-   - Cultural practices
-   - Inspection schedules
-   - Documentation requirements
-
-6. **Resource Requirements**:
-   - Equipment needed
-   - Materials and supplies
-   - Labor requirements
-   - Budget estimates
-
-Format your response as structured JSON with clear, actionable items for each section.`,
+Generate a complete {duration}-day strategy with specific daily/weekly actions.`,
 
     // The Partner - Conversational Assistant
     ASSISTANT_CONTEXT: `You are AgriGuard, an AI agronomist assistant helping farmers with precision farming and integrated pest management. You are knowledgeable about:

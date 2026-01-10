@@ -553,10 +553,37 @@
             <section class="page" id="page-strategist">
                 <div class="page-header">
                     <h1>🎯 The Strategist</h1>
-                    <p class="subtitle">Sustainable Integrated Pest Management</p>
+                    <p class="subtitle">AI-Powered Sustainable Integrated Pest Management</p>
                 </div>
 
                 <div class="strategist-container">
+                    <!-- Crop Imagery Analysis Section -->
+                    <div class="stress-detection glass-card">
+                        <h3>🛰️ Early Stress Detection</h3>
+                        <p class="section-desc">Upload crop/field imagery for AI-powered stress analysis to inform your IPM strategy</p>
+                        
+                        <div class="stress-upload-zone" id="stress-upload-zone">
+                            <div class="upload-placeholder">
+                                <span class="upload-icon">📸</span>
+                                <p>Drop field/crop images here or click to upload</p>
+                                <small>Drone imagery, satellite images, or close-up photos</small>
+                            </div>
+                            <input type="file" id="stress-file-input" accept="image/*" multiple hidden>
+                        </div>
+                        
+                        <div class="stress-preview hidden" id="stress-preview">
+                            <div class="preview-images" id="preview-images"></div>
+                            <button type="button" class="btn-secondary" id="clear-stress-images">
+                                <span>🗑️ Clear Images</span>
+                            </button>
+                        </div>
+                        
+                        <div class="stress-analysis hidden" id="stress-analysis">
+                            <h4>📊 Stress Analysis Results</h4>
+                            <div class="stress-insights" id="stress-insights"></div>
+                        </div>
+                    </div>
+
                     <div class="strategy-form glass-card">
                         <h3>📝 Farm Information</h3>
                         <form id="strategy-form">
@@ -658,6 +685,13 @@
                             <h3>🌱 Companion Planting Recommendations</h3>
                             <div class="companions-grid" id="companions-grid">
                                 <!-- Companion plants will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="beneficial-insects glass-card" id="beneficials-container">
+                            <h4>🐞 Beneficial Insects</h4>
+                            <div class="beneficials-grid">
+                                <!-- Beneficial insects will be rendered here -->
                             </div>
                         </div>
 

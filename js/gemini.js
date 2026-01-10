@@ -133,7 +133,7 @@ const GeminiAPI = {
     
     // ===== AgriGuard Specific Methods =====
     
-    // The Eye - Analyze field imagery
+    // The Eye - Analyze field imagery with multi-spectral simulation
     async analyzeField(imageBase64, mimeType, analysisOptions = {}) {
         let prompt = PROMPTS.FIELD_ANALYSIS;
         
@@ -148,14 +148,21 @@ const GeminiAPI = {
             prompt += `\n\nFocus especially on: ${analyses.join(', ')}.`;
         }
         
-        prompt += '\n\nRespond with valid JSON format.';
+        prompt += '\n\nRespond with valid JSON only. No markdown, no backticks.';
+        
+        console.log('🛰️ Starting multi-spectral field analysis...');
         
         const response = await this.analyzeImage(imageBase64, mimeType, prompt, {
             temperature: 0.3,
-            maxTokens: 4096
+            maxTokens: 8192
         });
         
-        return Utils.extractJSON(response);
+        console.log('📊 Field Analysis Raw Response:', response);
+        
+        const result = Utils.extractJSON(response);
+        console.log('🗺️ Parsed Health Map Data:', result);
+        
+        return result;
     },
     
     // The Specialist - Diagnose pest/disease
@@ -181,6 +188,25 @@ const GeminiAPI = {
         return result;
     },
     
+    // Early Stress Detection - Analyze crop imagery
+    async analyzeStress(imageBase64, mimeType) {
+        const prompt = PROMPTS.STRESS_DETECTION;
+        
+        console.log('🔍 Analyzing crop stress from imagery...');
+        
+        const response = await this.analyzeImage(imageBase64, mimeType, prompt, {
+            temperature: 0.2,
+            maxTokens: 8192
+        });
+        
+        console.log('📊 Stress Analysis Response:', response);
+        
+        const result = Utils.extractJSON(response);
+        console.log('🧪 Parsed Stress Analysis:', result);
+        
+        return result;
+    },
+    
     // The Strategist - Generate IPM plan
     async generateIPMStrategy(farmData) {
         let prompt = PROMPTS.IPM_STRATEGY
@@ -191,19 +217,35 @@ const GeminiAPI = {
             .replace('{method}', farmData.method)
             .replace('{duration}', farmData.duration);
         
+        // Add stress analysis context if available
+        let stressContext = '';
+        if (farmData.stressAnalysis) {
+            stressContext = `
+STRESS ANALYSIS FROM CROP IMAGERY:
+${JSON.stringify(farmData.stressAnalysis, null, 2)}
+
+IMPORTANT: Use the above stress analysis to provide CONTEXT-AWARE recommendations. The IPM strategy should directly address the detected stress indicators and predicted risks.`;
+        }
+        prompt = prompt.replace('{stressContext}', stressContext);
+        
         // Add weather context if available
         if (farmData.weatherData) {
             prompt += `\n\nCurrent Weather Context:\n${JSON.stringify(farmData.weatherData, null, 2)}`;
         }
         
-        prompt += '\n\nRespond with valid JSON format.';
+        console.log('🎯 Generating context-aware IPM strategy...');
         
         const response = await this.generateText(prompt, {
-            temperature: 0.5,
-            maxTokens: 8192
+            temperature: 0.4,
+            maxTokens: 12000
         });
         
-        return Utils.extractJSON(response);
+        console.log('📋 IPM Strategy Response:', response);
+        
+        const result = Utils.extractJSON(response);
+        console.log('✅ Parsed IPM Strategy:', result);
+        
+        return result;
     },
     
     // The Partner - Conversational assistant
