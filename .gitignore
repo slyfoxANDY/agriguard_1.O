@@ -1,0 +1,27 @@
+# Environment files with secrets
+.env
+env.js
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Generated icons (keep SVGs)
+icons/*.png

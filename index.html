@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="AgriGuard - AI-Powered Precision Farming & Integrated Pest Management">
+    <meta name="theme-color" content="#2D5A27">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AgriGuard">
+    
+    <title>AgriGuard - AI Agronomist</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <svg viewBox="0 0 100 100" class="logo-svg">
+                    <defs>
+                        <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4CAF50"/>
+                            <stop offset="100%" style="stop-color:#2D5A27"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M50 10 C20 30, 20 70, 50 90 C80 70, 80 30, 50 10" fill="url(#leafGradient)"/>
+                    <path d="M50 25 L50 75" stroke="#fff" stroke-width="2" fill="none"/>
+                    <path d="M50 40 L35 55" stroke="#fff" stroke-width="1.5" fill="none"/>
+                    <path d="M50 50 L65 65" stroke="#fff" stroke-width="1.5" fill="none"/>
+                    <circle cx="50" cy="30" r="8" fill="#FFD700" opacity="0.9"/>
+                </svg>
+            </div>
+            <h1 class="splash-title">AgriGuard</h1>
+            <p class="splash-subtitle">AI-Powered Precision Farming</p>
+            <div class="splash-loader">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="menu-btn" id="menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="logo-small">
+                    <svg viewBox="0 0 100 100" width="32" height="32">
+                        <path d="M50 10 C20 30, 20 70, 50 90 C80 70, 80 30, 50 10" fill="#4CAF50"/>
+                        <circle cx="50" cy="30" r="8" fill="#FFD700"/>
+                    </svg>
+                    <span>AgriGuard</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="voice-toggle" aria-label="Voice assistant">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="settings-btn" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Side Navigation -->
+        <nav class="side-nav" id="side-nav">
+            <div class="nav-overlay" id="nav-overlay"></div>
+            <div class="nav-content">
+                <div class="nav-header">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            </svg>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">Farmer</span>
+                            <span class="user-status">AI Agronomist Ready</span>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item active" data-page="dashboard">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9,22 9,12 15,12 15,22"/>
+                        </svg>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" data-page="eye">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>The Eye</span>
+                        <span class="nav-badge">Analysis</span>
+                    </li>
+                    <li class="nav-item" data-page="specialist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/>
+                            <path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                            <path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/>
+                            <path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/>
+                            <path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/>
+                            <path d="M15.5 19H14v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                            <path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/>
+                            <path d="M8.5 5H10V3.5C10 2.67 9.33 2 8.5 2S7 2.67 7 3.5 7.67 5 8.5 5z"/>
+                        </svg>
+                        <span>The Specialist</span>
+                        <span class="nav-badge">Diagnose</span>
+                    </li>
+                    <li class="nav-item" data-page="strategist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                            <polyline points="2 17 12 22 22 17"/>
+                            <polyline points="2 12 12 17 22 12"/>
+                        </svg>
+                        <span>The Strategist</span>
+                        <span class="nav-badge">IPM</span>
+                    </li>
+                    <li class="nav-item" data-page="partner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                        <span>The Partner</span>
+                        <span class="nav-badge">Voice</span>
+                    </li>
+                </ul>
+                <div class="nav-footer">
+                    <div class="weather-widget" id="weather-widget">
+                        <div class="weather-icon">☀️</div>
+                        <div class="weather-info">
+                            <span class="weather-temp">--°C</span>
+                            <span class="weather-desc">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <section class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h1>Welcome to AgriGuard</h1>
+                    <p class="subtitle">Your AI-Powered Farming Assistant</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Quick Stats -->
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon health">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="health-score">--</span>
+                            <span class="stat-label">Crop Health Score</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon alerts">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="active-alerts">0</span>
+                            <span class="stat-label">Active Alerts</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon analyses">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="9" y1="21" x2="9" y2="9"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="total-analyses">0</span>
+                            <span class="stat-label">Analyses Done</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon weather">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="weather-status">--</span>
+                            <span class="stat-label">Weather Status</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Cards -->
+                <h2 class="section-title">AI Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card" data-feature="eye">
+                        <div class="feature-icon">
+                            <div class="icon-bg eye"></div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <h3>The Eye</h3>
+                        <p>Multimodal satellite & drone analysis. Generate health maps for precision farming.</p>
+                        <button class="feature-btn">Analyze Field</button>
+                    </div>
+
+                    <div class="feature-card" data-feature="specialist">
+                        <div class="feature-icon">
+                            <div class="icon-bg specialist"></div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                <line x1="11" y1="8" x2="11" y2="14"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </div>
+                        <h3>The Specialist</h3>
+                        <p>Instant pest & disease diagnosis from photos. Get organic and chemical solutions.</p>
+                        <button class="feature-btn">Diagnose Now</button>
+                    </div>
+
+                    <div class="feature-card" data-feature="strategist">
+                        <div class="feature-icon">
+                            <div class="icon-bg strategist"></div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                <polyline points="2 17 12 22 22 17"/>
+                                <polyline points="2 12 12 17 22 12"/>
+                            </svg>
+                        </div>
+                        <h3>The Strategist</h3>
+                        <p>Long-term IPM plans with companion planting and predictive pest risk analysis.</p>
+                        <button class="feature-btn">Plan Strategy</button>
+                    </div>
+
+                    <div class="feature-card" data-feature="partner">
+                        <div class="feature-icon">
+                            <div class="icon-bg partner"></div>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                            </svg>
+                        </div>
+                        <h3>The Partner</h3>
+                        <p>Hands-free voice assistant. Ask questions while working in the field.</p>
+                        <button class="feature-btn">Start Talking</button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <h2 class="section-title">Recent Activity</h2>
+                <div class="activity-list glass-card" id="activity-list">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                        <p>No recent activity</p>
+                        <span>Start by analyzing your field or diagnosing a plant</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Eye Page -->
+            <section class="page" id="page-eye">
+                <div class="page-header">
+                    <h1>🛰️ The Eye</h1>
+                    <p class="subtitle">Multimodal Field Analysis & Health Mapping</p>
+                </div>
+
+                <div class="eye-container">
+                    <div class="upload-zone glass-card" id="eye-upload-zone">
+                        <div class="upload-content">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17,8 12,3 7,8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                            </div>
+                            <h3>Upload Satellite or Drone Image</h3>
+                            <p>Drag & drop or click to upload multi-spectral imagery</p>
+                            <p class="upload-formats">Supports: JPG, PNG, TIFF, GeoTIFF</p>
+                            <input type="file" id="eye-file-input" accept="image/*" hidden>
+                            <button class="upload-btn" id="eye-upload-btn">Select Image</button>
+                        </div>
+                        <div class="upload-preview hidden" id="eye-preview">
+                            <img id="eye-preview-img" alt="Preview">
+                            <button class="remove-btn" id="eye-remove-btn">×</button>
+                        </div>
+                    </div>
+
+                    <div class="analysis-options glass-card">
+                        <h3>Analysis Options</h3>
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked id="opt-vegetation">
+                                <span class="checkmark"></span>
+                                Vegetation Health (NDVI)
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked id="opt-water">
+                                <span class="checkmark"></span>
+                                Water Stress Detection
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked id="opt-pest">
+                                <span class="checkmark"></span>
+                                Pest/Disease Zones
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="opt-fertilizer">
+                                <span class="checkmark"></span>
+                                Fertilizer Requirements
+                            </label>
+                        </div>
+                        <button class="analyze-btn" id="eye-analyze-btn" disabled>
+                            <span class="btn-text">Generate Health Map</span>
+                            <span class="btn-loader hidden"></span>
+                        </button>
+                    </div>
+
+                    <div class="results-container hidden" id="eye-results">
+                        <div class="health-map glass-card">
+                            <h3>🗺️ Field Health Map</h3>
+                            <div class="map-display" id="health-map-display">
+                                <!-- Health map will be rendered here -->
+                            </div>
+                            <div class="map-legend">
+                                <div class="legend-item"><span class="legend-color excellent"></span> Excellent</div>
+                                <div class="legend-item"><span class="legend-color good"></span> Good</div>
+                                <div class="legend-item"><span class="legend-color moderate"></span> Moderate</div>
+                                <div class="legend-item"><span class="legend-color poor"></span> Poor</div>
+                                <div class="legend-item"><span class="legend-color critical"></span> Critical</div>
+                            </div>
+                        </div>
+
+                        <div class="analysis-report glass-card">
+                            <h3>📊 Analysis Report</h3>
+                            <div class="report-content" id="eye-report-content">
+                                <!-- Report will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="zone-recommendations glass-card">
+                            <h3>🎯 Zone Recommendations</h3>
+                            <div class="recommendations-list" id="eye-recommendations">
+                                <!-- Recommendations will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Specialist Page -->
+            <section class="page" id="page-specialist">
+                <div class="page-header">
+                    <h1>🔬 The Specialist</h1>
+                    <p class="subtitle">Instant Pest & Disease Diagnosis</p>
+                </div>
+
+                <div class="specialist-container">
+                    <div class="capture-zone glass-card">
+                        <div class="capture-tabs">
+                            <button class="tab-btn active" data-tab="upload">Upload Photo</button>
+                            <button class="tab-btn" data-tab="camera">Use Camera</button>
+                        </div>
+
+                        <div class="tab-content active" id="tab-upload">
+                            <div class="upload-area" id="specialist-upload-zone">
+                                <div class="upload-content">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21,15 16,10 5,21"/>
+                                    </svg>
+                                    <h3>Upload Plant Image</h3>
+                                    <p>Take a clear photo of the affected leaf, stem, or fruit</p>
+                                    <input type="file" id="specialist-file-input" accept="image/*" capture="environment" hidden>
+                                    <button class="upload-btn" id="specialist-upload-btn">Select Image</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="tab-camera">
+                            <div class="camera-container">
+                                <video id="camera-feed" autoplay playsinline></video>
+                                <canvas id="camera-canvas" hidden></canvas>
+                                <div class="camera-overlay">
+                                    <div class="focus-frame"></div>
+                                </div>
+                                <button class="capture-btn" id="capture-btn">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="preview-container hidden" id="specialist-preview">
+                            <img id="specialist-preview-img" alt="Plant image preview">
+                            <div class="preview-actions">
+                                <button class="action-btn secondary" id="specialist-retake-btn">Retake</button>
+                                <button class="action-btn primary" id="specialist-diagnose-btn">
+                                    <span class="btn-text">Diagnose</span>
+                                    <span class="btn-loader hidden"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="diagnosis-tips glass-card">
+                        <h3>📸 Tips for Best Results</h3>
+                        <ul class="tips-list">
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12,6 12,12 16,14"/>
+                                </svg>
+                                Take photos in good natural lighting
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                    <circle cx="12" cy="13" r="4"/>
+                                </svg>
+                                Focus on the affected area clearly
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                Include both healthy and affected parts
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="3" y1="9" x2="21" y2="9"/>
+                                </svg>
+                                Capture front and back of leaves
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="diagnosis-results hidden" id="specialist-results">
+                        <div class="diagnosis-card glass-card">
+                            <div class="diagnosis-header">
+                                <div class="diagnosis-icon" id="diagnosis-icon">🔍</div>
+                                <div class="diagnosis-title">
+                                    <h3 id="diagnosis-name">Analyzing...</h3>
+                                    <span class="confidence-badge" id="confidence-badge">--% Confidence</span>
+                                </div>
+                            </div>
+                            <div class="diagnosis-body">
+                                <div class="info-section">
+                                    <h4>📋 Description</h4>
+                                    <p id="diagnosis-description"></p>
+                                </div>
+                                <div class="info-section">
+                                    <h4>🔄 Lifecycle & Spread</h4>
+                                    <p id="diagnosis-lifecycle"></p>
+                                </div>
+                                <div class="info-section">
+                                    <h4>⚠️ Risk Level</h4>
+                                    <div class="risk-indicator" id="risk-indicator">
+                                        <div class="risk-bar">
+                                            <div class="risk-fill" id="risk-fill"></div>
+                                        </div>
+                                        <span class="risk-label" id="risk-label">Moderate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="treatment-cards">
+                            <div class="treatment-card organic glass-card">
+                                <div class="treatment-header">
+                                    <span class="treatment-icon">🌿</span>
+                                    <h3>Organic Solutions</h3>
+                                </div>
+                                <div class="treatment-content" id="organic-treatments">
+                                    <!-- Organic treatments will be rendered here -->
+                                </div>
+                            </div>
+
+                            <div class="treatment-card chemical glass-card">
+                                <div class="treatment-header">
+                                    <span class="treatment-icon">🧪</span>
+                                    <h3>Chemical Solutions</h3>
+                                </div>
+                                <div class="treatment-content" id="chemical-treatments">
+                                    <!-- Chemical treatments will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="prevention-tips glass-card">
+                            <h3>🛡️ Prevention Tips</h3>
+                            <div class="prevention-content" id="prevention-tips">
+                                <!-- Prevention tips will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Strategist Page -->
+            <section class="page" id="page-strategist">
+                <div class="page-header">
+                    <h1>🎯 The Strategist</h1>
+                    <p class="subtitle">Sustainable Integrated Pest Management</p>
+                </div>
+
+                <div class="strategist-container">
+                    <div class="strategy-form glass-card">
+                        <h3>📝 Farm Information</h3>
+                        <form id="strategy-form">
+                            <div class="form-group">
+                                <label for="crop-type">Primary Crop</label>
+                                <select id="crop-type" required>
+                                    <option value="">Select crop...</option>
+                                    <option value="tomato">Tomatoes</option>
+                                    <option value="potato">Potatoes</option>
+                                    <option value="corn">Corn/Maize</option>
+                                    <option value="wheat">Wheat</option>
+                                    <option value="rice">Rice</option>
+                                    <option value="cotton">Cotton</option>
+                                    <option value="soybean">Soybeans</option>
+                                    <option value="pepper">Peppers</option>
+                                    <option value="cucumber">Cucumbers</option>
+                                    <option value="lettuce">Lettuce</option>
+                                    <option value="carrot">Carrots</option>
+                                    <option value="onion">Onions</option>
+                                    <option value="apple">Apples</option>
+                                    <option value="grape">Grapes</option>
+                                    <option value="strawberry">Strawberries</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="farm-size">Farm Size (acres)</label>
+                                <input type="number" id="farm-size" placeholder="e.g., 50" min="0.1" step="0.1" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location">Location / Region</label>
+                                <input type="text" id="location" placeholder="e.g., Central Valley, California" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="current-issues">Current Pest/Disease Issues (if any)</label>
+                                <textarea id="current-issues" rows="3" placeholder="Describe any current problems you're facing..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="farming-method">Farming Method</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="farming-method" value="conventional" checked>
+                                        <span class="radio-mark"></span>
+                                        Conventional
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="farming-method" value="organic">
+                                        <span class="radio-mark"></span>
+                                        Organic
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="farming-method" value="integrated">
+                                        <span class="radio-mark"></span>
+                                        Integrated
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="plan-duration">Strategy Duration</label>
+                                <select id="plan-duration">
+                                    <option value="30">30 Days</option>
+                                    <option value="60" selected>60 Days</option>
+                                    <option value="90">90 Days</option>
+                                    <option value="180">6 Months</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="generate-btn" id="generate-strategy-btn">
+                                <span class="btn-text">Generate IPM Strategy</span>
+                                <span class="btn-loader hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="weather-forecast glass-card">
+                        <h3>🌤️ Weather Forecast</h3>
+                        <div class="forecast-container" id="forecast-container">
+                            <div class="forecast-loading">
+                                <div class="spinner"></div>
+                                <p>Loading forecast...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="strategy-results hidden" id="strategy-results">
+                        <div class="strategy-overview glass-card">
+                            <h3>📊 IPM Strategy Overview</h3>
+                            <div class="overview-content" id="strategy-overview">
+                                <!-- Strategy overview will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="companion-planting glass-card">
+                            <h3>🌱 Companion Planting Recommendations</h3>
+                            <div class="companions-grid" id="companions-grid">
+                                <!-- Companion plants will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="risk-assessment glass-card">
+                            <h3>⚡ Predictive Risk Assessment</h3>
+                            <div class="risk-timeline" id="risk-timeline">
+                                <!-- Risk timeline will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="spray-timing glass-card">
+                            <h3>⏰ Optimal Spray Timing</h3>
+                            <div class="timing-calendar" id="timing-calendar">
+                                <!-- Timing calendar will be rendered here -->
+                            </div>
+                        </div>
+
+                        <div class="action-plan glass-card">
+                            <h3>📋 Action Plan Calendar</h3>
+                            <div class="calendar-view" id="action-calendar">
+                                <!-- Action calendar will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Partner Page -->
+            <section class="page" id="page-partner">
+                <div class="page-header">
+                    <h1>🎙️ The Partner</h1>
+                    <p class="subtitle">Your Voice-Activated AI Agronomist</p>
+                </div>
+
+                <div class="partner-container">
+                    <div class="conversation-area glass-card">
+                        <div class="conversation-header">
+                            <div class="assistant-avatar">
+                                <svg viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="#4CAF50"/>
+                                    <path d="M50 25 C30 40, 30 70, 50 85 C70 70, 70 40, 50 25" fill="#fff"/>
+                                    <circle cx="50" cy="40" r="8" fill="#FFD700"/>
+                                </svg>
+                            </div>
+                            <div class="assistant-info">
+                                <h3>AgriGuard Assistant</h3>
+                                <span class="status" id="assistant-status">Ready to help</span>
+                            </div>
+                        </div>
+
+                        <div class="messages-container" id="messages-container">
+                            <div class="message assistant">
+                                <div class="message-content">
+                                    <p>Hello! I'm your AI agronomist. You can ask me anything about:</p>
+                                    <ul>
+                                        <li>🌱 Plant health and diseases</li>
+                                        <li>🐛 Pest identification and control</li>
+                                        <li>💧 Irrigation and watering</li>
+                                        <li>🧪 Fertilization advice</li>
+                                        <li>📅 Planting schedules</li>
+                                    </ul>
+                                    <p>Try saying "What's wrong with my tomato plant?" or tap the microphone to start!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="voice-visualizer hidden" id="voice-visualizer">
+                            <div class="visualizer-bars">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                            <span class="visualizer-text">Listening...</span>
+                        </div>
+
+                        <div class="input-area">
+                            <div class="image-attach hidden" id="voice-image-preview">
+                                <img id="voice-attached-image" alt="Attached image">
+                                <button class="remove-image-btn" id="remove-voice-image">×</button>
+                            </div>
+                            <div class="input-row">
+                                <button class="attach-btn" id="voice-attach-btn" title="Attach image">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                        <polyline points="21,15 16,10 5,21"/>
+                                    </svg>
+                                </button>
+                                <input type="file" id="voice-image-input" accept="image/*" hidden>
+                                <input type="text" id="text-input" placeholder="Type a message or tap mic to speak...">
+                                <button class="send-btn" id="send-btn" title="Send message">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22,2 15,22 11,13 2,9 22,2"/>
+                                    </svg>
+                                </button>
+                                <button class="mic-btn" id="mic-btn" title="Voice input">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                        <line x1="12" y1="19" x2="12" y2="23"/>
+                                        <line x1="8" y1="23" x2="16" y2="23"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions glass-card">
+                        <h3>⚡ Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button class="quick-action-btn" data-query="What's the weather forecast for farming this week?">
+                                <span class="action-icon">🌤️</span>
+                                <span>Weather</span>
+                            </button>
+                            <button class="quick-action-btn" data-query="What pests should I watch out for this season?">
+                                <span class="action-icon">🐛</span>
+                                <span>Pest Alert</span>
+                            </button>
+                            <button class="quick-action-btn" data-query="When is the best time to water my crops?">
+                                <span class="action-icon">💧</span>
+                                <span>Irrigation</span>
+                            </button>
+                            <button class="quick-action-btn" data-query="What fertilizer should I use right now?">
+                                <span class="action-icon">🧪</span>
+                                <span>Fertilizer</span>
+                            </button>
+                            <button class="quick-action-btn" data-query="Give me a quick farm health check summary">
+                                <span class="action-icon">📊</span>
+                                <span>Health Check</span>
+                            </button>
+                            <button class="quick-action-btn" data-query="What should I plant next month?">
+                                <span class="action-icon">🌱</span>
+                                <span>Planting</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div class="modal" id="settings-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content glass-card">
+                <div class="modal-header">
+                    <h2>⚙️ Settings</h2>
+                    <button class="close-btn" id="close-settings">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h3>🔑 API Configuration</h3>
+                        <div class="form-group">
+                            <label for="api-key">Gemini API Key</label>
+                            <div class="api-key-input">
+                                <input type="password" id="api-key" placeholder="Enter your Gemini API key">
+                                <button class="toggle-visibility" id="toggle-api-key">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="helper-text">Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></p>
+                        </div>
+                        <button class="save-btn" id="save-api-key">Save API Key</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🎨 Appearance</h3>
+                        <div class="form-group">
+                            <label>Theme</label>
+                            <div class="theme-options">
+                                <button class="theme-btn active" data-theme="light">☀️ Light</button>
+                                <button class="theme-btn" data-theme="dark">🌙 Dark</button>
+                                <button class="theme-btn" data-theme="auto">🔄 Auto</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>🔊 Voice Settings</h3>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="voice-enabled" checked>
+                                <span class="checkmark"></span>
+                                Enable voice responses
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="voice-speed">Speech Rate</label>
+                            <input type="range" id="voice-speed" min="0.5" max="2" step="0.1" value="1">
+                            <span id="voice-speed-value">1x</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>📍 Location</h3>
+                        <div class="form-group">
+                            <label for="default-location">Default Farm Location</label>
+                            <input type="text" id="default-location" placeholder="City, Country">
+                        </div>
+                        <button class="location-btn" id="detect-location">📍 Detect My Location</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toast-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="env.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/gemini.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/eye.js"></script>
+    <script src="js/specialist.js"></script>
+    <script src="js/strategist.js"></script>
+    <script src="js/partner.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>

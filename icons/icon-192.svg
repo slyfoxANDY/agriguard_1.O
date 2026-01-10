@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2D5A27"/>
+      <stop offset="100%" style="stop-color:#1a3d1a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D35E"/>
+      <stop offset="100%" style="stop-color:#E8B923"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  
+  <!-- Shield shape -->
+  <path d="M96 25 L155 50 L155 100 C155 135 130 160 96 175 C62 160 37 135 37 100 L37 50 Z" 
+        fill="none" stroke="url(#gold)" stroke-width="4" opacity="0.9"/>
+  
+  <!-- Wheat/plant in center -->
+  <g transform="translate(96,95)">
+    <!-- Stem -->
+    <line x1="0" y1="50" x2="0" y2="-30" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Leaves -->
+    <ellipse cx="-18" cy="20" rx="15" ry="8" fill="#4CAF50" transform="rotate(-30)"/>
+    <ellipse cx="18" cy="20" rx="15" ry="8" fill="#4CAF50" transform="rotate(30)"/>
+    <ellipse cx="-15" cy="0" rx="12" ry="6" fill="#66BB6A" transform="rotate(-40)"/>
+    <ellipse cx="15" cy="0" rx="12" ry="6" fill="#66BB6A" transform="rotate(40)"/>
+    
+    <!-- Grain head -->
+    <ellipse cx="0" cy="-35" rx="8" ry="12" fill="url(#gold)"/>
+    <ellipse cx="-8" cy="-28" rx="6" ry="10" fill="url(#gold)" transform="rotate(-15)"/>
+    <ellipse cx="8" cy="-28" rx="6" ry="10" fill="url(#gold)" transform="rotate(15)"/>
+    <ellipse cx="-12" cy="-20" rx="5" ry="8" fill="url(#gold)" transform="rotate(-25)"/>
+    <ellipse cx="12" cy="-20" rx="5" ry="8" fill="url(#gold)" transform="rotate(25)"/>
+  </g>
+  
+  <!-- AI sparkles -->
+  <circle cx="55" cy="55" r="3" fill="white" opacity="0.8"/>
+  <circle cx="137" cy="55" r="3" fill="white" opacity="0.8"/>
+  <circle cx="50" cy="120" r="2" fill="white" opacity="0.6"/>
+  <circle cx="142" cy="120" r="2" fill="white" opacity="0.6"/>
+</svg>

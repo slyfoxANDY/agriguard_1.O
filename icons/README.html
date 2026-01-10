@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { margin: 0; padding: 20px; font-family: system-ui; background: #1a1a2e; color: white; }
+        h1 { color: #4CAF50; }
+        .icons { display: flex; flex-wrap: wrap; gap: 20px; }
+        .icon-box { 
+            background: #16213e; 
+            padding: 20px; 
+            border-radius: 12px; 
+            text-align: center;
+        }
+        .icon-box img { display: block; margin: 0 auto 10px; }
+        .icon-box span { font-size: 14px; opacity: 0.7; }
+        code { background: #0f0f23; padding: 10px; display: block; margin: 20px 0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>🌾 AgriGuard Icons</h1>
+    <p>SVG icons for the AgriGuard PWA. For production, convert these to PNG using a tool like:</p>
+    <code>npx svgexport icons/icon-512.svg icons/icon-512.png 512:512</code>
+    
+    <h2>Available Icons</h2>
+    <div class="icons">
+        <div class="icon-box">
+            <img src="icon-512.svg" width="128" height="128" alt="512x512">
+            <span>512x512</span>
+        </div>
+        <div class="icon-box">
+            <img src="icon-192.svg" width="96" height="96" alt="192x192">
+            <span>192x192</span>
+        </div>
+    </div>
+    
+    <h2>Required Sizes</h2>
+    <p>For full PWA support, generate these PNG sizes:</p>
+    <ul>
+        <li>72x72 - Android (low)</li>
+        <li>96x96 - Android (medium)</li>
+        <li>128x128 - Android (high)</li>
+        <li>144x144 - Android (x-high)</li>
+        <li>152x152 - iOS</li>
+        <li>192x192 - Android (xx-high) / Chrome</li>
+        <li>384x384 - Android (xxx-high)</li>
+        <li>512x512 - Chrome / Splash screen</li>
+    </ul>
+    
+    <h2>Quick Generate Script</h2>
+    <p>Create a script to generate all sizes:</p>
+    <code>
+# Install sharp-cli globally<br>
+npm install -g sharp-cli<br><br>
+# Generate all sizes from 512 SVG<br>
+sharp -i icon-512.svg -o icon-72.png resize 72 72<br>
+sharp -i icon-512.svg -o icon-96.png resize 96 96<br>
+sharp -i icon-512.svg -o icon-128.png resize 128 128<br>
+sharp -i icon-512.svg -o icon-144.png resize 144 144<br>
+sharp -i icon-512.svg -o icon-152.png resize 152 152<br>
+sharp -i icon-512.svg -o icon-192.png resize 192 192<br>
+sharp -i icon-512.svg -o icon-384.png resize 384 384<br>
+sharp -i icon-512.svg -o icon-512.png resize 512 512
+    </code>
+</body>
+</html>

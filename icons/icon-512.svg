@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2D5A27"/>
+      <stop offset="100%" style="stop-color:#1a3d1a"/>
+    </linearGradient>
+    <linearGradient id="gold512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F4D35E"/>
+      <stop offset="100%" style="stop-color:#E8B923"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#bg512)"/>
+  
+  <!-- Shield shape -->
+  <path d="M256 50 L430 115 L430 260 C430 365 355 440 256 480 C157 440 82 365 82 260 L82 115 Z" 
+        fill="none" stroke="url(#gold512)" stroke-width="8" opacity="0.9" filter="url(#glow)"/>
+  
+  <!-- Inner glow ring -->
+  <circle cx="256" cy="256" r="120" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="40"/>
+  
+  <!-- Main plant -->
+  <g transform="translate(256,250)">
+    <!-- Main stem -->
+    <line x1="0" y1="140" x2="0" y2="-60" stroke="#4CAF50" stroke-width="10" stroke-linecap="round"/>
+    
+    <!-- Large leaves -->
+    <ellipse cx="-50" cy="60" rx="40" ry="20" fill="#4CAF50" transform="rotate(-30)"/>
+    <ellipse cx="50" cy="60" rx="40" ry="20" fill="#4CAF50" transform="rotate(30)"/>
+    <ellipse cx="-40" cy="20" rx="35" ry="16" fill="#66BB6A" transform="rotate(-40)"/>
+    <ellipse cx="40" cy="20" rx="35" ry="16" fill="#66BB6A" transform="rotate(40)"/>
+    <ellipse cx="-30" cy="-15" rx="28" ry="12" fill="#81C784" transform="rotate(-45)"/>
+    <ellipse cx="30" cy="-15" rx="28" ry="12" fill="#81C784" transform="rotate(45)"/>
+    
+    <!-- Wheat grain head -->
+    <ellipse cx="0" cy="-85" rx="20" ry="30" fill="url(#gold512)"/>
+    <ellipse cx="-22" cy="-70" rx="16" ry="26" fill="url(#gold512)" transform="rotate(-15)"/>
+    <ellipse cx="22" cy="-70" rx="16" ry="26" fill="url(#gold512)" transform="rotate(15)"/>
+    <ellipse cx="-35" cy="-50" rx="14" ry="22" fill="url(#gold512)" transform="rotate(-25)"/>
+    <ellipse cx="35" cy="-50" rx="14" ry="22" fill="url(#gold512)" transform="rotate(25)"/>
+    <ellipse cx="-42" cy="-28" rx="10" ry="16" fill="url(#gold512)" transform="rotate(-35)"/>
+    <ellipse cx="42" cy="-28" rx="10" ry="16" fill="url(#gold512)" transform="rotate(35)"/>
+    
+    <!-- Top awn -->
+    <line x1="0" y1="-115" x2="0" y2="-130" stroke="url(#gold512)" stroke-width="3"/>
+    <line x1="-15" y1="-100" x2="-25" y2="-120" stroke="url(#gold512)" stroke-width="2"/>
+    <line x1="15" y1="-100" x2="25" y2="-120" stroke="url(#gold512)" stroke-width="2"/>
+  </g>
+  
+  <!-- AI sparkles -->
+  <circle cx="130" cy="130" r="8" fill="white" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="382" cy="130" r="8" fill="white" opacity="0.9">
+    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="110" cy="330" r="6" fill="white" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="402" cy="330" r="6" fill="white" opacity="0.7">
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="256" cy="430" r="5" fill="white" opacity="0.6"/>
+  
+  <!-- Corner decorations -->
+  <path d="M60 60 L90 60 L60 90" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <path d="M452 60 L422 60 L452 90" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <path d="M60 452 L90 452 L60 422" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <path d="M452 452 L422 452 L452 422" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+</svg>
