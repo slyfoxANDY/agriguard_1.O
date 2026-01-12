@@ -3,6 +3,7 @@
 const App = {
     currentPage: 'dashboard',
     initialized: false,
+    isNavigatingBack: false, // Flag to prevent pushState during back navigation
     
     // Initialize application
     async init() {
@@ -18,6 +19,7 @@ const App = {
         // Setup UI
         this.setupEventListeners();
         this.setupNavigation();
+        this.setupHistoryNavigation(); // Setup History API for back button
         this.loadTheme();
         this.loadSettings();
         
@@ -35,6 +37,80 @@ const App = {
         
         this.initialized = true;
         console.log('✅ AgriGuard initialized');
+    },
+    
+    // Setup History API for browser/Android back button support
+    setupHistoryNavigation() {
+        // Set initial state for dashboard
+        if (!window.history.state || !window.history.state.page) {
+            window.history.replaceState({ page: 'dashboard' }, '', '#dashboard');
+        } else {
+            // Restore page from history state on page load/refresh
+            this.currentPage = window.history.state.page;
+            this.showPage(window.history.state.page, false);
+        }
+        
+        // Listen for back/forward button presses
+        window.addEventListener('popstate', (event) => {
+            this.handlePopState(event);
+        });
+        
+        // Android-specific: prevent app close on back button when not on dashboard
+        document.addEventListener('backbutton', (event) => {
+            if (this.currentPage !== 'dashboard') {
+                event.preventDefault();
+                window.history.back();
+            }
+        }, false);
+    },
+    
+    // Handle browser back/forward navigation
+    handlePopState(event) {
+        const state = event.state;
+        const page = state?.page || 'dashboard';
+        
+        console.log('📍 Popstate: navigating to', page);
+        
+        // Set flag to prevent pushState during this navigation
+        this.isNavigatingBack = true;
+        
+        // Navigate to the page from history
+        this.showPage(page, false);
+        
+        // Reset flag
+        this.isNavigatingBack = false;
+    },
+    
+    // Show page without modifying history (used by popstate handler)
+    showPage(page, updateHistory = true) {
+        // Update nav items
+        $$('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.page === page);
+        });
+        
+        // Update pages
+        $$('.page').forEach(p => {
+            p.classList.toggle('active', p.id === `page-${page}`);
+        });
+        
+        // Close mobile nav
+        $('#menu-toggle')?.classList.remove('active');
+        $('#side-nav')?.classList.remove('open');
+        
+        this.currentPage = page;
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Page-specific initialization
+        if (page === 'strategist') {
+            StrategistModule.loadForecast();
+        }
+        
+        // Update history if needed (not during back navigation)
+        if (updateHistory && !this.isNavigatingBack) {
+            window.history.pushState({ page: page }, '', `#${page}`);
+        }
     },
     
     // Setup event listeners
@@ -112,31 +188,13 @@ const App = {
         });
     },
     
-    // Navigate to page
+    // Navigate to page (with history push)
     navigateTo(page) {
-        // Update nav items
-        $$('.nav-item').forEach(item => {
-            item.classList.toggle('active', item.dataset.page === page);
-        });
+        // Don't push duplicate states
+        if (this.currentPage === page) return;
         
-        // Update pages
-        $$('.page').forEach(p => {
-            p.classList.toggle('active', p.id === `page-${page}`);
-        });
-        
-        // Close mobile nav
-        $('#menu-toggle')?.classList.remove('active');
-        $('#side-nav')?.classList.remove('open');
-        
-        this.currentPage = page;
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // Page-specific initialization
-        if (page === 'strategist') {
-            StrategistModule.loadForecast();
-        }
+        // Use showPage which handles history
+        this.showPage(page, true);
     },
     
     // Setup settings handlers
