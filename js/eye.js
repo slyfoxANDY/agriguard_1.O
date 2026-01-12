@@ -1722,7 +1722,7 @@ const EyeModule = {
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `agriguard-health-map-${Date.now()}.json`;
+        a.download = `krishimitra-health-map-${Date.now()}.json`;
         a.click();
         
         URL.revokeObjectURL(url);

@@ -1,7 +1,7 @@
-// AgriGuard Service Worker
-const CACHE_NAME = 'agriguard-v1.0.0';
-const STATIC_CACHE = 'agriguard-static-v1';
-const DYNAMIC_CACHE = 'agriguard-dynamic-v1';
+// KrishiMitra Service Worker
+const CACHE_NAME = 'krishimitra-v1.0.0';
+const STATIC_CACHE = 'krishimitra-static-v1';
+const DYNAMIC_CACHE = 'krishimitra-dynamic-v1';
 
 // Assets to cache on install
 const STATIC_ASSETS = [
@@ -62,7 +62,7 @@ self.addEventListener('activate', event => {
                         .filter(name => {
                             return name !== STATIC_CACHE && 
                                    name !== DYNAMIC_CACHE &&
-                                   name.startsWith('agriguard-');
+                                   name.startsWith('krishimitra-');
                         })
                         .map(name => {
                             console.log('[Service Worker] Deleting old cache:', name);
@@ -177,7 +177,7 @@ function createOfflineResponse(request) {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Offline - AgriGuard</title>
+                <title>Offline - KrishiMitra</title>
                 <style>
                     body {
                         font-family: system-ui, -apple-system, sans-serif;
@@ -225,7 +225,7 @@ function createOfflineResponse(request) {
                 <div class="container">
                     <div class="icon">🌾</div>
                     <h1>You're Offline</h1>
-                    <p>AgriGuard needs an internet connection for AI features. Please check your connection and try again.</p>
+                    <p>KrishiMitra needs an internet connection for AI features. Please check your connection and try again.</p>
                     <button onclick="location.reload()">Try Again</button>
                 </div>
             </body>
@@ -243,7 +243,7 @@ function createOfflineResponse(request) {
 // Handle push notifications
 self.addEventListener('push', event => {
     const options = {
-        body: event.data?.text() || 'New update from AgriGuard',
+        body: event.data?.text() || 'New update from KrishiMitra',
         icon: '/icons/icon-192.png',
         badge: '/icons/badge-72.png',
         vibrate: [100, 50, 100],
@@ -258,7 +258,7 @@ self.addEventListener('push', event => {
     };
     
     event.waitUntil(
-        self.registration.showNotification('AgriGuard', options)
+        self.registration.showNotification('KrishiMitra', options)
     );
 });
 

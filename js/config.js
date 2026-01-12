@@ -1,6 +1,6 @@
-// AgriGuard Configuration
+// KrishiMitra Configuration
 const CONFIG = {
-    APP_NAME: 'AgriGuard',
+    APP_NAME: 'KrishiMitra',
     VERSION: '1.0.0',
     
     // API Endpoints
@@ -14,13 +14,13 @@ const CONFIG = {
     
     // Storage Keys
     STORAGE_KEYS: {
-        API_KEY: 'agriguard_api_key',
-        THEME: 'agriguard_theme',
-        LOCATION: 'agriguard_location',
-        VOICE_ENABLED: 'agriguard_voice_enabled',
-        VOICE_SPEED: 'agriguard_voice_speed',
-        ANALYSES: 'agriguard_analyses',
-        ACTIVITY: 'agriguard_activity'
+        API_KEY: 'krishimitra_api_key',
+        THEME: 'krishimitra_theme',
+        LOCATION: 'krishimitra_location',
+        VOICE_ENABLED: 'krishimitra_voice_enabled',
+        VOICE_SPEED: 'krishimitra_voice_speed',
+        ANALYSES: 'krishimitra_analyses',
+        ACTIVITY: 'krishimitra_activity'
     },
     
     // Default Location (can be overridden)
@@ -415,7 +415,7 @@ STRATEGY PRINCIPLES:
 Generate a complete {duration}-day strategy with specific daily/weekly actions.`,
 
     // The Partner - Conversational Assistant
-    ASSISTANT_CONTEXT: `You are AgriGuard, an AI agronomist assistant helping farmers with precision farming and integrated pest management. You are knowledgeable about:
+    ASSISTANT_CONTEXT: `You are KrishiMitra, an AI agronomist assistant helping farmers with precision farming and integrated pest management. You are knowledgeable about:
 
 - Plant health and diseases
 - Pest identification and control
@@ -437,7 +437,7 @@ Guidelines:
 - Use emojis occasionally to make responses engaging
 - Always prioritize crop and farmer safety
 
-Current context: The farmer is using AgriGuard PWA for precision farming assistance.`
+Current context: The farmer is using KrishiMitra PWA for precision farming assistance.`
 };
 
 // Export for use in other modules

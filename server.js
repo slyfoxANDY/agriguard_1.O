@@ -1,4 +1,4 @@
-// AgriGuard Backend Server
+// KrishiMitra Backend Server
 // Node.js Express backend for secure Gemini API integration
 
 const path = require('path');
@@ -71,7 +71,7 @@ app.use((req, res, next) => {
 app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'ok', 
-        message: 'AgriGuard API is running',
+        message: 'KrishiMitra API is running',
         timestamp: new Date().toISOString()
     });
 });
@@ -285,7 +285,7 @@ app.listen(PORT, () => {
     console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║   🌾 AgriGuard Server Started Successfully! 🌾            ║
+║   🌾 KrishiMitra Server Started Successfully! 🌾          ║
 ║                                                           ║
 ║   Local:    http://localhost:${PORT}                       ║
 ║   API:      http://localhost:${PORT}/api                   ║

@@ -1,4 +1,4 @@
-// Voice Interface for AgriGuard (The Partner)
+// Voice Interface for KrishiMitra (The Partner)
 
 const VoiceAPI = {
     recognition: null,

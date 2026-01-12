@@ -1,4 +1,4 @@
-// Weather API Integration for AgriGuard
+// Weather API Integration for KrishiMitra
 
 const WeatherAPI = {
     location: null,

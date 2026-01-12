@@ -1,6 +1,6 @@
 {
-    "name": "AgriGuard - AI Agronomist",
-    "short_name": "AgriGuard",
+    "name": "KrishiMitra - AI Agronomist",
+    "short_name": "KrishiMitra",
     "description": "AI-Powered Precision Farming & Integrated Pest Management",
     "start_url": "/",
     "display": "standalone",
@@ -94,7 +94,7 @@
         {
             "name": "Voice Assistant",
             "short_name": "Assistant",
-            "description": "Talk to AgriGuard",
+            "description": "Talk to KrishiMitra",
             "url": "/#partner",
             "icons": [{ "src": "icons/voice.png", "sizes": "96x96" }]
         }

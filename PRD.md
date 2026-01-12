@@ -1,15 +1,15 @@
-# AgriGuard - Product Requirements Document
+# KrishiMitra - Product Requirements Document
 ## Gemini-Powered Precision Farming & Integrated Pest Management
 
 **Version:** 1.0  
 **Date:** January 10, 2026  
-**Author:** AgriGuard Development Team
+**Author:** KrishiMitra Development Team
 
 ---
 
 ## 1. Executive Summary
 
-AgriGuard is an AI-powered Progressive Web Application (PWA) that serves as a comprehensive "AI Agronomist" for modern farmers. By leveraging Google Gemini's advanced multimodal capabilities, AgriGuard bridges the gap between complex agricultural data (satellite imagery, weather patterns, plant pathology) and practical, actionable farming decisions.
+KrishiMitra is an AI-powered Progressive Web Application (PWA) that serves as a comprehensive "AI Agronomist" for modern farmers. By leveraging Google Gemini's advanced multimodal capabilities, KrishiMitra bridges the gap between complex agricultural data (satellite imagery, weather patterns, plant pathology) and practical, actionable farming decisions.
 
 ### Vision Statement
 *"Empowering farmers with AI-driven insights to optimize crop health, minimize pest damage, and promote sustainable agricultural practices."*
@@ -26,7 +26,7 @@ Modern farmers face several challenges:
 - **Accessibility Gap:** Complex agricultural technology remains inaccessible to many farmers
 
 ### 2.2 Solution
-AgriGuard provides an intelligent, easy-to-use interface that:
+KrishiMitra provides an intelligent, easy-to-use interface that:
 - Analyzes multi-spectral imagery to create actionable health maps
 - Instantly diagnoses plant diseases and pests from photos
 - Generates sustainable, long-term pest management strategies
@@ -184,7 +184,7 @@ AgriGuard provides an intelligent, easy-to-use interface that:
 ### 5.1 System Overview
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    AgriGuard PWA                            │
+│                    KrishiMitra PWA                          │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐       │
 │  │ The Eye │  │Specialist│  │Strategist│  │ Partner │       │

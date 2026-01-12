@@ -1,4 +1,4 @@
-// Main Application Controller for AgriGuard
+// Main Application Controller for KrishiMitra
 
 const App = {
     currentPage: 'dashboard',
@@ -9,7 +9,7 @@ const App = {
     async init() {
         if (this.initialized) return;
         
-        console.log('🌱 Initializing AgriGuard...');
+        console.log('🌱 Initializing KrishiMitra...');
         
         // Initialize APIs
         GeminiAPI.init();
@@ -36,7 +36,7 @@ const App = {
         this.hideSplash();
         
         this.initialized = true;
-        console.log('✅ AgriGuard initialized');
+        console.log('✅ KrishiMitra initialized');
     },
     
     // Setup History API for browser/Android back button support

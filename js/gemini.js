@@ -1,4 +1,4 @@
-// Gemini AI Integration for AgriGuard
+// Gemini AI Integration for KrishiMitra
 // Frontend client that communicates with backend API
 
 const GeminiAPI = {
@@ -122,7 +122,7 @@ const GeminiAPI = {
         return this.request(CONFIG.GEMINI_MODEL, contents, options);
     },
     
-    // ===== AgriGuard Specific Methods =====
+    // ===== KrishiMitra Specific Methods =====
     
     // The Eye - Analyze field imagery with multi-spectral simulation
     async analyzeField(imageBase64, mimeType, analysisOptions = {}) {

@@ -1,4 +1,4 @@
-// Utility Functions for AgriGuard
+// Utility Functions for KrishiMitra
 
 const Utils = {
     // Storage utilities

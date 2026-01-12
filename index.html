@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="AgriGuard - AI-Powered Precision Farming & Integrated Pest Management">
+    <meta name="description" content="KrishiMitra - AI-Powered Precision Farming & Integrated Pest Management">
     <meta name="theme-color" content="#2D5A27">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="AgriGuard">
+    <meta name="apple-mobile-web-app-title" content="KrishiMitra">
     
-    <title>AgriGuard - AI Agronomist</title>
+    <title>KrishiMitra - AI Agronomist</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg">
@@ -43,7 +43,7 @@
                     <circle cx="50" cy="30" r="8" fill="#FFD700" opacity="0.9"/>
                 </svg>
             </div>
-            <h1 class="splash-title">AgriGuard</h1>
+            <h1 class="splash-title">KrishiMitra</h1>
             <p class="splash-subtitle">AI-Powered Precision Farming</p>
             <div class="splash-loader">
                 <div class="loader-bar"></div>
@@ -66,7 +66,7 @@
                         <path d="M50 10 C20 30, 20 70, 50 90 C80 70, 80 30, 50 10" fill="#4CAF50"/>
                         <circle cx="50" cy="30" r="8" fill="#FFD700"/>
                     </svg>
-                    <span>AgriGuard</span>
+                    <span>KrishiMitra</span>
                 </div>
             </div>
             <div class="header-right">
@@ -171,7 +171,7 @@
             <!-- Dashboard Page -->
             <section class="page active" id="page-dashboard">
                 <div class="page-header">
-                    <h1>Welcome to AgriGuard</h1>
+                    <h1>Welcome to KrishiMitra</h1>
                     <p class="subtitle">Your AI-Powered Farming Assistant</p>
                 </div>
 
@@ -591,21 +591,104 @@
                                 <label for="crop-type">Primary Crop</label>
                                 <select id="crop-type" required>
                                     <option value="">Select crop...</option>
-                                    <option value="tomato">Tomatoes</option>
-                                    <option value="potato">Potatoes</option>
-                                    <option value="corn">Corn/Maize</option>
-                                    <option value="wheat">Wheat</option>
-                                    <option value="rice">Rice</option>
-                                    <option value="cotton">Cotton</option>
-                                    <option value="soybean">Soybeans</option>
-                                    <option value="pepper">Peppers</option>
-                                    <option value="cucumber">Cucumbers</option>
-                                    <option value="lettuce">Lettuce</option>
-                                    <option value="carrot">Carrots</option>
-                                    <option value="onion">Onions</option>
-                                    <option value="apple">Apples</option>
-                                    <option value="grape">Grapes</option>
-                                    <option value="strawberry">Strawberries</option>
+                                    
+                                    <!-- Food Grains -->
+                                    <optgroup label="🌾 Food Grains">
+                                        <option value="rice">Rice</option>
+                                        <option value="wheat">Wheat</option>
+                                        <option value="maize">Maize/Corn</option>
+                                        <option value="jowar">Jowar (Sorghum)</option>
+                                        <option value="bajra">Bajra (Pearl Millet)</option>
+                                        <option value="ragi">Ragi (Finger Millet)</option>
+                                        <option value="barley">Barley</option>
+                                    </optgroup>
+                                    
+                                    <!-- Pulses -->
+                                    <optgroup label="🫘 Pulses">
+                                        <option value="chickpea">Chickpea (Chana)</option>
+                                        <option value="pigeon-pea">Pigeon Pea (Arhar/Tur)</option>
+                                        <option value="lentil">Lentils (Masoor)</option>
+                                        <option value="mung-bean">Mung Bean (Moong)</option>
+                                        <option value="urad">Black Gram (Urad)</option>
+                                        <option value="kidney-bean">Kidney Bean (Rajma)</option>
+                                        <option value="soybean">Soybean</option>
+                                    </optgroup>
+                                    
+                                    <!-- Cash Crops -->
+                                    <optgroup label="💰 Cash Crops">
+                                        <option value="sugarcane">Sugarcane</option>
+                                        <option value="cotton">Cotton</option>
+                                        <option value="jute">Jute</option>
+                                        <option value="tobacco">Tobacco</option>
+                                    </optgroup>
+                                    
+                                    <!-- Oilseeds -->
+                                    <optgroup label="🥜 Oilseeds">
+                                        <option value="groundnut">Groundnut (Peanut)</option>
+                                        <option value="mustard">Mustard</option>
+                                        <option value="sunflower">Sunflower</option>
+                                        <option value="sesame">Sesame (Til)</option>
+                                        <option value="castor">Castor</option>
+                                        <option value="linseed">Linseed</option>
+                                        <option value="safflower">Safflower</option>
+                                    </optgroup>
+                                    
+                                    <!-- Plantation Crops -->
+                                    <optgroup label="🌴 Plantation Crops">
+                                        <option value="tea">Tea</option>
+                                        <option value="coffee">Coffee</option>
+                                        <option value="coconut">Coconut</option>
+                                        <option value="rubber">Rubber</option>
+                                        <option value="arecanut">Arecanut (Betel Nut)</option>
+                                        <option value="cardamom">Cardamom</option>
+                                        <option value="black-pepper">Black Pepper</option>
+                                    </optgroup>
+                                    
+                                    <!-- Vegetables -->
+                                    <optgroup label="🥬 Vegetables">
+                                        <option value="tomato">Tomato</option>
+                                        <option value="potato">Potato</option>
+                                        <option value="onion">Onion</option>
+                                        <option value="brinjal">Brinjal (Eggplant)</option>
+                                        <option value="okra">Okra (Bhindi)</option>
+                                        <option value="cauliflower">Cauliflower</option>
+                                        <option value="cabbage">Cabbage</option>
+                                        <option value="pepper">Chilli/Pepper</option>
+                                        <option value="cucumber">Cucumber</option>
+                                        <option value="spinach">Spinach (Palak)</option>
+                                        <option value="carrot">Carrot</option>
+                                        <option value="peas">Green Peas</option>
+                                        <option value="bottle-gourd">Bottle Gourd (Lauki)</option>
+                                        <option value="bitter-gourd">Bitter Gourd (Karela)</option>
+                                        <option value="lettuce">Lettuce</option>
+                                    </optgroup>
+                                    
+                                    <!-- Fruits -->
+                                    <optgroup label="🍎 Fruits">
+                                        <option value="mango">Mango</option>
+                                        <option value="banana">Banana</option>
+                                        <option value="apple">Apple</option>
+                                        <option value="grape">Grapes</option>
+                                        <option value="orange">Orange/Citrus</option>
+                                        <option value="papaya">Papaya</option>
+                                        <option value="guava">Guava</option>
+                                        <option value="pomegranate">Pomegranate</option>
+                                        <option value="watermelon">Watermelon</option>
+                                        <option value="strawberry">Strawberry</option>
+                                        <option value="litchi">Litchi</option>
+                                        <option value="pineapple">Pineapple</option>
+                                    </optgroup>
+                                    
+                                    <!-- Spices -->
+                                    <optgroup label="🌶️ Spices">
+                                        <option value="turmeric">Turmeric (Haldi)</option>
+                                        <option value="ginger">Ginger (Adrak)</option>
+                                        <option value="garlic">Garlic (Lahsun)</option>
+                                        <option value="coriander">Coriander (Dhaniya)</option>
+                                        <option value="cumin">Cumin (Jeera)</option>
+                                        <option value="fenugreek">Fenugreek (Methi)</option>
+                                    </optgroup>
+                                    
                                     <option value="other">Other</option>
                                 </select>
                             </div>
@@ -748,7 +831,7 @@
                                 </svg>
                             </div>
                             <div class="assistant-info">
-                                <h3>AgriGuard Assistant</h3>
+                                <h3>KrishiMitra Assistant</h3>
                                 <span class="status" id="assistant-status">Ready to help</span>
                             </div>
                         </div>
