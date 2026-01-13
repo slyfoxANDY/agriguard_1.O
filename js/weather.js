@@ -123,7 +123,7 @@ const WeatherAPI = {
         }
         
         try {
-            const url = `${CONFIG.WEATHER_API_URL}?latitude=${this.location.lat}&longitude=${this.location.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`;
+            const url = `${CONFIG.WEATHER_API_URL}?latitude=${this.location.lat}&longitude=${this.location.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&timezone=auto`;
             
             const response = await fetch(url);
             
@@ -133,12 +133,15 @@ const WeatherAPI = {
             
             const data = await response.json();
             
+            const isDay = data.current.is_day === 1;
+            
             const weather = {
                 temperature: Math.round(data.current.temperature_2m),
                 humidity: data.current.relative_humidity_2m,
                 windSpeed: Math.round(data.current.wind_speed_10m),
                 weatherCode: data.current.weather_code,
-                emoji: Utils.getWeatherEmoji(data.current.weather_code),
+                isDay: isDay,
+                emoji: Utils.getWeatherEmoji(data.current.weather_code, isDay),
                 description: this.getWeatherDescription(data.current.weather_code),
                 location: this.location.name
             };

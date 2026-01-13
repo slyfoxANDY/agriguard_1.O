@@ -359,9 +359,10 @@ const Utils = {
         }
     },
     
-    // Get weather emoji
-    getWeatherEmoji(code) {
-        const weatherEmojis = {
+    // Get weather emoji (with day/night support)
+    getWeatherEmoji(code, isDay = true) {
+        // Day weather emojis
+        const dayEmojis = {
             0: '☀️', // Clear sky
             1: '🌤️', 2: '⛅', 3: '☁️', // Partly cloudy
             45: '🌫️', 48: '🌫️', // Fog
@@ -371,7 +372,21 @@ const Utils = {
             80: '🌧️', 81: '🌧️', 82: '🌧️', // Showers
             95: '⛈️', 96: '⛈️', 99: '⛈️' // Thunderstorm
         };
-        return weatherEmojis[code] || '🌡️';
+        
+        // Night weather emojis
+        const nightEmojis = {
+            0: '🌙', // Clear night
+            1: '🌙', 2: '☁️', 3: '☁️', // Partly cloudy night
+            45: '🌫️', 48: '🌫️', // Fog
+            51: '🌧️', 53: '🌧️', 55: '🌧️', // Drizzle
+            61: '🌧️', 63: '🌧️', 65: '🌧️', // Rain
+            71: '🌨️', 73: '🌨️', 75: '🌨️', // Snow
+            80: '🌧️', 81: '🌧️', 82: '🌧️', // Showers
+            95: '⛈️', 96: '⛈️', 99: '⛈️' // Thunderstorm
+        };
+        
+        const emojis = isDay ? dayEmojis : nightEmojis;
+        return emojis[code] || '🌡️';
     },
     
     // Get health status color
