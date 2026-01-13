@@ -370,6 +370,432 @@ const WeatherAPI = {
                 icon: '⚠️'
             }];
         }
+    },
+
+    // ===== Weather Alerts System =====
+    
+    alerts: [],
+    alertsLastChecked: null,
+    alertCheckInterval: 30 * 60 * 1000, // Check every 30 minutes
+    
+    // Get weather alerts based on current and forecast conditions
+    async getWeatherAlerts() {
+        const cacheKey = `alerts_${this.location.lat}_${this.location.lon}`;
+        
+        // Check cache
+        if (this.cache[cacheKey] && Date.now() - this.cache[cacheKey].timestamp < this.alertCheckInterval) {
+            return this.cache[cacheKey].data;
+        }
+        
+        try {
+            const current = await this.getCurrentWeather();
+            const forecast = await this.getForecast(7);
+            const hourly = await this.getHourlyForecast(2);
+            
+            const alerts = [];
+            const now = new Date();
+            
+            // === SEVERE ALERTS (Red) ===
+            
+            // Extreme heat (>40°C)
+            if (current.temperature > 40) {
+                alerts.push({
+                    id: 'extreme_heat',
+                    severity: 'severe',
+                    type: 'temperature',
+                    title: '🔥 Extreme Heat Warning',
+                    message: `Temperature is ${current.temperature}°C! Crops are at high risk of heat stress and wilting. Avoid fieldwork during midday.`,
+                    advice: [
+                        'Increase irrigation frequency',
+                        'Apply mulch to retain soil moisture',
+                        'Provide shade for sensitive crops',
+                        'Harvest ripe produce early morning'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Frost warning (<2°C)
+            if (current.temperature < 2) {
+                alerts.push({
+                    id: 'frost_warning',
+                    severity: 'severe',
+                    type: 'temperature',
+                    title: '❄️ Frost Warning',
+                    message: `Temperature is ${current.temperature}°C! Risk of frost damage to crops.`,
+                    advice: [
+                        'Cover sensitive plants with cloth or plastic',
+                        'Move potted plants indoors',
+                        'Avoid watering in evening',
+                        'Harvest frost-sensitive produce immediately'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 12 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Severe thunderstorm
+            if ([95, 96, 99].includes(current.weatherCode)) {
+                alerts.push({
+                    id: 'thunderstorm',
+                    severity: 'severe',
+                    type: 'storm',
+                    title: '⛈️ Severe Thunderstorm',
+                    message: 'Active thunderstorm detected! Seek shelter immediately and avoid open fields.',
+                    advice: [
+                        'Stop all outdoor activities',
+                        'Secure loose equipment',
+                        'Stay away from tall trees',
+                        'Check drainage systems'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 3 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Heavy rain (code 65, 82)
+            if ([65, 82].includes(current.weatherCode)) {
+                alerts.push({
+                    id: 'heavy_rain',
+                    severity: 'severe',
+                    type: 'precipitation',
+                    title: '🌧️ Heavy Rain Alert',
+                    message: 'Heavy rainfall in progress. Risk of waterlogging and soil erosion.',
+                    advice: [
+                        'Check field drainage',
+                        'Avoid spraying pesticides',
+                        'Postpone fertilizer application',
+                        'Monitor for fungal disease outbreaks'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // === WARNING ALERTS (Orange) ===
+            
+            // High temperature (35-40°C)
+            if (current.temperature >= 35 && current.temperature <= 40) {
+                alerts.push({
+                    id: 'high_heat',
+                    severity: 'warning',
+                    type: 'temperature',
+                    title: '🌡️ Heat Stress Warning',
+                    message: `High temperature of ${current.temperature}°C detected. Crops may experience stress.`,
+                    advice: [
+                        'Irrigate during cooler hours',
+                        'Monitor plants for wilting',
+                        'Avoid fieldwork 11am-3pm'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 8 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Cold weather (2-5°C)
+            if (current.temperature >= 2 && current.temperature < 5) {
+                alerts.push({
+                    id: 'cold_weather',
+                    severity: 'warning',
+                    type: 'temperature',
+                    title: '🥶 Cold Weather Advisory',
+                    message: `Temperature is ${current.temperature}°C. Sensitive crops may be affected.`,
+                    advice: [
+                        'Monitor overnight temperatures',
+                        'Prepare frost protection materials',
+                        'Delay planting of warm-season crops'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 12 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // High wind (>25 km/h)
+            if (current.windSpeed > 25) {
+                alerts.push({
+                    id: 'high_wind',
+                    severity: 'warning',
+                    type: 'wind',
+                    title: '💨 High Wind Warning',
+                    message: `Wind speed is ${current.windSpeed} km/h. Not suitable for spraying.`,
+                    advice: [
+                        'Do not spray pesticides or herbicides',
+                        'Secure greenhouse covers',
+                        'Support tall plants and trellises',
+                        'Delay foliar feeding'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Low humidity (<30%)
+            if (current.humidity < 30) {
+                alerts.push({
+                    id: 'low_humidity',
+                    severity: 'warning',
+                    type: 'humidity',
+                    title: '🏜️ Low Humidity Alert',
+                    message: `Humidity is only ${current.humidity}%. Increased water stress possible.`,
+                    advice: [
+                        'Increase irrigation frequency',
+                        'Apply anti-transpirant sprays',
+                        'Add mulch to reduce evaporation'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 8 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // === ADVISORY ALERTS (Yellow/Info) ===
+            
+            // Moderate wind (15-25 km/h)
+            if (current.windSpeed >= 15 && current.windSpeed <= 25) {
+                alerts.push({
+                    id: 'moderate_wind',
+                    severity: 'advisory',
+                    type: 'wind',
+                    title: '🍃 Windy Conditions',
+                    message: `Wind at ${current.windSpeed} km/h. Consider spray timing carefully.`,
+                    advice: [
+                        'Use low-drift nozzles if spraying',
+                        'Spray in early morning when calmer',
+                        'Reduce spray pressure'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // High humidity (>85%) - disease risk
+            if (current.humidity > 85) {
+                alerts.push({
+                    id: 'high_humidity',
+                    severity: 'advisory',
+                    type: 'humidity',
+                    title: '💧 High Humidity Advisory',
+                    message: `Humidity at ${current.humidity}%. Increased risk of fungal diseases.`,
+                    advice: [
+                        'Scout for early signs of fungal infection',
+                        'Improve air circulation in dense plantings',
+                        'Consider preventive fungicide application',
+                        'Avoid overhead irrigation'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 8 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Fog conditions
+            if ([45, 48].includes(current.weatherCode)) {
+                alerts.push({
+                    id: 'fog',
+                    severity: 'advisory',
+                    type: 'visibility',
+                    title: '🌫️ Fog Advisory',
+                    message: 'Foggy conditions detected. Increased disease pressure possible.',
+                    advice: [
+                        'Delay spraying until fog lifts',
+                        'Monitor for fungal diseases',
+                        'Extended leaf wetness may increase infections'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // === FORECAST-BASED ALERTS ===
+            
+            // Rain coming in next 24-48 hours
+            const rainDays = forecast.slice(0, 3).filter(d => d.precipProbability > 60);
+            if (rainDays.length > 0 && ![61, 63, 65, 80, 81, 82].includes(current.weatherCode)) {
+                alerts.push({
+                    id: 'rain_forecast',
+                    severity: 'info',
+                    type: 'forecast',
+                    title: '🌧️ Rain Expected',
+                    message: `Rain likely on ${rainDays.map(d => d.dayName).join(', ')} (${rainDays[0].precipProbability}% chance).`,
+                    advice: [
+                        'Complete spraying today if needed',
+                        'Harvest mature produce before rain',
+                        'Check drainage systems',
+                        'Apply protective fungicides now'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Temperature drop coming
+            const tempDropDays = forecast.slice(1, 4).filter(d => d.tempMin < 5);
+            if (tempDropDays.length > 0 && current.temperature > 10) {
+                alerts.push({
+                    id: 'temp_drop',
+                    severity: 'info',
+                    type: 'forecast',
+                    title: '📉 Cold Spell Coming',
+                    message: `Temperature expected to drop to ${Math.min(...tempDropDays.map(d => d.tempMin))}°C.`,
+                    advice: [
+                        'Prepare frost protection',
+                        'Delay transplanting tender seedlings',
+                        'Harvest frost-sensitive crops'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Heat wave coming
+            const heatWaveDays = forecast.slice(1, 4).filter(d => d.tempMax > 38);
+            if (heatWaveDays.length >= 2 && current.temperature < 35) {
+                alerts.push({
+                    id: 'heat_wave',
+                    severity: 'warning',
+                    type: 'forecast',
+                    title: '🔥 Heat Wave Approaching',
+                    message: `Temperatures above 38°C expected for ${heatWaveDays.length} days.`,
+                    advice: [
+                        'Prepare irrigation systems',
+                        'Harvest before heat peak',
+                        'Apply shade cloth if available',
+                        'Schedule work for early morning'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // === OPTIMAL CONDITIONS (Positive Alert) ===
+            
+            // Good spray window in next 6 hours
+            const goodSprayHours = hourly.slice(0, 6).filter(h => 
+                h.windSpeed < 10 && 
+                h.precipProbability < 20 && 
+                h.temperature >= 15 && 
+                h.temperature <= 30
+            );
+            
+            if (goodSprayHours.length >= 3 && alerts.filter(a => a.type === 'wind' || a.type === 'precipitation').length === 0) {
+                alerts.push({
+                    id: 'spray_window',
+                    severity: 'good',
+                    type: 'opportunity',
+                    title: '✅ Good Spray Window',
+                    message: 'Next 6 hours have favorable conditions for pesticide application.',
+                    advice: [
+                        'Low wind, no rain expected',
+                        'Optimal temperature for absorption',
+                        'Apply pesticides/fertilizers now'
+                    ],
+                    timestamp: now.toISOString(),
+                    expiresAt: new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            
+            // Sort by severity
+            const severityOrder = { severe: 0, warning: 1, advisory: 2, info: 3, good: 4 };
+            alerts.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+            
+            // Cache the results
+            this.cache[cacheKey] = {
+                data: alerts,
+                timestamp: Date.now()
+            };
+            
+            this.alerts = alerts;
+            this.alertsLastChecked = new Date();
+            
+            return alerts;
+        } catch (error) {
+            console.error('Weather alerts error:', error);
+            return [];
+        }
+    },
+    
+    // Get count of active alerts by severity
+    getAlertCounts() {
+        const counts = {
+            severe: this.alerts.filter(a => a.severity === 'severe').length,
+            warning: this.alerts.filter(a => a.severity === 'warning').length,
+            advisory: this.alerts.filter(a => a.severity === 'advisory').length,
+            info: this.alerts.filter(a => a.severity === 'info').length,
+            good: this.alerts.filter(a => a.severity === 'good').length,
+            total: this.alerts.length
+        };
+        return counts;
+    },
+    
+    // Show browser notification for severe alerts
+    async showAlertNotification(alert) {
+        if (!('Notification' in window)) {
+            console.log('Notifications not supported');
+            return;
+        }
+        
+        if (Notification.permission === 'default') {
+            await Notification.requestPermission();
+        }
+        
+        if (Notification.permission === 'granted') {
+            const notification = new Notification(`KrishiMitra: ${alert.title}`, {
+                body: alert.message,
+                icon: '/icons/icon-192.png',
+                badge: '/icons/badge-72.png',
+                tag: alert.id,
+                requireInteraction: alert.severity === 'severe',
+                vibrate: alert.severity === 'severe' ? [200, 100, 200] : [100]
+            });
+            
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        }
+    },
+    
+    // Check for new alerts and notify
+    async checkAndNotify() {
+        const previousAlerts = [...this.alerts];
+        const currentAlerts = await this.getWeatherAlerts();
+        
+        // Find new severe/warning alerts
+        const newAlerts = currentAlerts.filter(current => 
+            (current.severity === 'severe' || current.severity === 'warning') &&
+            !previousAlerts.find(prev => prev.id === current.id)
+        );
+        
+        // Show notifications for new alerts
+        for (const alert of newAlerts) {
+            await this.showAlertNotification(alert);
+        }
+        
+        return currentAlerts;
+    },
+    
+    // Start automatic alert checking
+    startAlertMonitoring(intervalMs = 30 * 60 * 1000) {
+        // Initial check
+        this.checkAndNotify();
+        
+        // Set up periodic checking
+        if (this.alertMonitorInterval) {
+            clearInterval(this.alertMonitorInterval);
+        }
+        
+        this.alertMonitorInterval = setInterval(() => {
+            this.checkAndNotify();
+        }, intervalMs);
+        
+        console.log('🔔 Weather alert monitoring started');
+    },
+    
+    // Stop alert monitoring
+    stopAlertMonitoring() {
+        if (this.alertMonitorInterval) {
+            clearInterval(this.alertMonitorInterval);
+            this.alertMonitorInterval = null;
+        }
     }
 };
 

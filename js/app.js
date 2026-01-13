@@ -32,6 +32,9 @@ const App = {
         // Load dashboard data
         await this.loadDashboardData();
         
+        // Start weather alert monitoring
+        WeatherAPI.startAlertMonitoring();
+        
         // Hide splash screen
         this.hideSplash();
         
@@ -321,11 +324,86 @@ const App = {
         // Update weather widget
         await this.updateWeatherWidget();
         
+        // Load weather alerts
+        await this.loadWeatherAlerts();
+        
         // Update stats
         this.updateStats();
         
         // Update activity list
         this.updateActivityList();
+    },
+    
+    // Load and display weather alerts
+    async loadWeatherAlerts() {
+        try {
+            const alerts = await WeatherAPI.getWeatherAlerts();
+            this.displayWeatherAlerts(alerts);
+        } catch (error) {
+            console.error('Failed to load weather alerts:', error);
+        }
+    },
+    
+    // Display weather alerts on dashboard
+    displayWeatherAlerts(alerts) {
+        let container = $('#weather-alerts-container');
+        
+        // Create container if it doesn't exist
+        if (!container) {
+            const dashboardPage = $('#page-dashboard');
+            if (dashboardPage) {
+                const alertsSection = document.createElement('div');
+                alertsSection.id = 'weather-alerts-section';
+                alertsSection.className = 'weather-alerts-section';
+                alertsSection.innerHTML = `
+                    <h2 class="section-title">🔔 Weather Alerts</h2>
+                    <div id="weather-alerts-container" class="weather-alerts-container"></div>
+                `;
+                
+                // Insert after feature grid
+                const featureGrid = dashboardPage.querySelector('.feature-grid');
+                if (featureGrid) {
+                    featureGrid.parentNode.insertBefore(alertsSection, featureGrid.nextSibling);
+                } else {
+                    dashboardPage.appendChild(alertsSection);
+                }
+                
+                container = $('#weather-alerts-container');
+            }
+        }
+        
+        if (!container) return;
+        
+        if (alerts.length === 0) {
+            container.innerHTML = `
+                <div class="no-alerts">
+                    <span class="no-alerts-icon">✅</span>
+                    <p>No weather alerts at this time</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = alerts.map(alert => `
+            <div class="weather-alert alert-${alert.severity}" data-alert-id="${alert.id}">
+                <div class="alert-header">
+                    <span class="alert-title">${alert.title}</span>
+                    <span class="alert-badge ${alert.severity}">${alert.severity.toUpperCase()}</span>
+                </div>
+                <p class="alert-message">${alert.message}</p>
+                ${alert.advice && alert.advice.length > 0 ? `
+                    <div class="alert-advice">
+                        <strong>Recommended Actions:</strong>
+                        <ul>
+                            ${alert.advice.map(a => `<li>${a}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                <div class="alert-footer">
+                    <span class="alert-time">Updated: ${new Date(alert.timestamp).toLocaleTimeString()}</span>
+                </div>
+            </div>
+        `).join('');
     },
     
     // Update weather widget
@@ -373,10 +451,19 @@ const App = {
             }
         }
         
-        // Active alerts (placeholder - could be based on risk assessments)
+        // Active alerts - now based on weather alerts
         const activeAlerts = $('#active-alerts');
         if (activeAlerts) {
-            activeAlerts.textContent = '0';
+            const alertCounts = WeatherAPI.getAlertCounts();
+            const importantAlerts = alertCounts.severe + alertCounts.warning;
+            activeAlerts.textContent = importantAlerts;
+            
+            // Add visual indicator for alerts
+            if (importantAlerts > 0) {
+                activeAlerts.parentElement.classList.add('has-alerts');
+            } else {
+                activeAlerts.parentElement.classList.remove('has-alerts');
+            }
         }
         
         // Total analyses

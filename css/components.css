@@ -3329,3 +3329,213 @@
 .stress-mini .mini-value.warning {
     color: var(--danger);
 }
+
+/* ===========================
+   Weather Alerts Section
+   =========================== */
+.weather-alerts-section {
+    margin-top: var(--spacing-xl);
+}
+
+.weather-alerts-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.weather-alert {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--gray);
+    transition: all var(--transition-fast);
+}
+
+.weather-alert:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Alert severity colors */
+.weather-alert.alert-severe {
+    border-left-color: #dc3545;
+    background: linear-gradient(to right, rgba(220, 53, 69, 0.05), white);
+}
+
+.weather-alert.alert-warning {
+    border-left-color: #fd7e14;
+    background: linear-gradient(to right, rgba(253, 126, 20, 0.05), white);
+}
+
+.weather-alert.alert-advisory {
+    border-left-color: #ffc107;
+    background: linear-gradient(to right, rgba(255, 193, 7, 0.05), white);
+}
+
+.weather-alert.alert-info {
+    border-left-color: #17a2b8;
+    background: linear-gradient(to right, rgba(23, 162, 184, 0.05), white);
+}
+
+.weather-alert.alert-good {
+    border-left-color: #28a745;
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.05), white);
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.alert-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.alert-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.alert-badge.severe {
+    background: #dc3545;
+    color: white;
+}
+
+.alert-badge.warning {
+    background: #fd7e14;
+    color: white;
+}
+
+.alert-badge.advisory {
+    background: #ffc107;
+    color: #212529;
+}
+
+.alert-badge.info {
+    background: #17a2b8;
+    color: white;
+}
+
+.alert-badge.good {
+    background: #28a745;
+    color: white;
+}
+
+.alert-message {
+    color: var(--gray);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+}
+
+.alert-advice {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.alert-advice strong {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+.alert-advice ul {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+}
+
+.alert-advice li {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
+}
+
+.alert-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.alert-time {
+    font-size: 0.8rem;
+    color: var(--light-gray);
+}
+
+.no-alerts {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), rgba(40, 167, 69, 0.02));
+    border-radius: var(--radius-lg);
+}
+
+.no-alerts-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--spacing-md);
+}
+
+.no-alerts p {
+    color: var(--gray);
+    font-size: 1rem;
+}
+
+/* Alert indicator for stat card */
+.stat-info.has-alerts .stat-value {
+    color: #fd7e14;
+    animation: pulse-alert 2s infinite;
+}
+
+@keyframes pulse-alert {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .weather-alert {
+    background: var(--dark-card);
+}
+
+[data-theme="dark"] .weather-alert.alert-severe {
+    background: linear-gradient(to right, rgba(220, 53, 69, 0.1), var(--dark-card));
+}
+
+[data-theme="dark"] .weather-alert.alert-warning {
+    background: linear-gradient(to right, rgba(253, 126, 20, 0.1), var(--dark-card));
+}
+
+[data-theme="dark"] .weather-alert.alert-advisory {
+    background: linear-gradient(to right, rgba(255, 193, 7, 0.1), var(--dark-card));
+}
+
+[data-theme="dark"] .weather-alert.alert-info {
+    background: linear-gradient(to right, rgba(23, 162, 184, 0.1), var(--dark-card));
+}
+
+[data-theme="dark"] .weather-alert.alert-good {
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.1), var(--dark-card));
+}
+
+[data-theme="dark"] .alert-title {
+    color: var(--dark-text);
+}
+
+[data-theme="dark"] .alert-advice {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="dark"] .no-alerts {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+}
